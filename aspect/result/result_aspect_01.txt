@@ -1,0 +1,480 @@
+0
+terios paling gagah. apalagi warna merah metalic!
+TEST:  ['aspect-others']
+PRED:  ['aspect-others']
+1
+gue pakai mobilio. menurut gue, bener fun to drive, enak dipakainya.
+TEST:  ['aspect-others']
+PRED:  ['aspect-others']
+2
+ya walaupun memiliki desain sporty kalau tingkat kenyamanan mobil berkurang juga berkurang kan
+TEST:  ['aspect-part', 'aspect-others']
+PRED:  ['aspect-part']
+3
+xpander laku keras di pasar indonesia.
+TEST:  ['aspect-others']
+PRED:  []
+4
+kalau mau segala enak pakai avanza saja, mas.
+TEST:  ['aspect-others']
+PRED:  ['aspect-others']
+5
+kalau untuk mahasiswa lebih baik pakai vario saja.
+TEST:  ['aspect-others']
+PRED:  ['aspect-others']
+6
+nyaman banget pakai toyota rush.
+TEST:  ['aspect-others']
+PRED:  ['aspect-others']
+7
+xpander enak banget sih dipakainya, selalu di hati pokoknya.
+TEST:  ['aspect-others']
+PRED:  ['aspect-others']
+8
+aku sih sudah nyaman dengan vario.
+TEST:  ['aspect-others']
+PRED:  ['aspect-others']
+9
+scoopy sangat mendukung mobilisasiku setiap harinya.
+TEST:  ['aspect-others']
+PRED:  ['aspect-others']
+10
+puas banget deh pakai spacy mah, meski sudah tidak produksi.
+TEST:  ['aspect-others']
+PRED:  ['aspect-others']
+11
+mini cooper paling cakep di antara yang lainnya.
+TEST:  ['aspect-others']
+PRED:  ['aspect-others']
+12
+secara keseluruhan kecewa dengan grandmax.
+TEST:  ['aspect-others']
+PRED:  ['aspect-others']
+13
+sumpah suzuki carry alay banget sih.
+TEST:  ['aspect-others']
+PRED:  ['aspect-others']
+14
+bangga nih kalau pakai xpander.
+TEST:  ['aspect-others']
+PRED:  ['aspect-others']
+15
+honda brio jelek, aku menyesal membelinya.
+TEST:  ['aspect-others']
+PRED:  ['aspect-others']
+16
+senangnya pakai toyota rush.
+TEST:  ['aspect-others']
+PRED:  ['aspect-others']
+17
+sayang banget deh sama si kecil calya.
+TEST:  ['aspect-others']
+PRED:  ['aspect-others']
+18
+agak menyesal beli toyota c-hr, tidak sesuai bayanganku.
+TEST:  ['aspect-others']
+PRED:  ['aspect-others']
+19
+jadi bangga gini euy kalo pakai alphard mah haha
+TEST:  ['aspect-others']
+PRED:  ['aspect-others']
+20
+saya pakai nissan livina x gear 2009 sampai pemakaian 98.000 jarang rewel mesinnya, kaki-kaki masih nyaman bantingan masih oke
+TEST:  ['aspect-machine', 'aspect-part']
+PRED:  ['aspect-machine', 'aspect-part']
+21
+saya pakai grand livina tetapi ngelitik terus mesinnya padahal sudah tune up lebih dari 3x. pakai shell terus enggak pernah premium.
+TEST:  ['aspect-machine']
+PRED:  ['aspect-machine']
+22
+saya pengguna livina zaman dulu tahun 2008 xv 1.8, alhamdulillah sampai sekarang enggak ada problem ngelitik mesinnya. lari enak.
+TEST:  ['aspect-machine']
+PRED:  ['aspect-machine']
+23
+nissan grand livina tarikan lambat, isi 7 penumpang rada amblas.
+TEST:  ['aspect-machine']
+PRED:  ['aspect-machine']
+24
+yamaha vega force, motor berpedal bandel nan irit. teman yang cocok mengisi aktivitas & kesibukanmu sobat
+TEST:  ['aspect-machine', 'aspect-fuel']
+PRED:  ['aspect-fuel']
+25
+jadi pengin beli honda win100, si honda bandel, irit, bisa untuk segala medan, khususnya medan kaligawe yang cukup ekstrem, cocok bangetlah buat pekerja keras.
+TEST:  ['aspect-machine', 'aspect-fuel', 'aspect-others']
+PRED:  ['aspect-others', 'aspect-machine', 'aspect-fuel']
+26
+bingung dahulu mau beli motor apa yang irit, body enak dilihat, mesin bandel dan enggak gampang rusak untuk berangkat pulang kerja sama untuk kerja ojek daring, tetapi pas ada teman yang menyarankan beli honda scoopy semua kegelisahan teratasi saat ini :d
+TEST:  ['aspect-fuel', 'aspect-part', 'aspect-machine']
+PRED:  ['aspect-machine', 'aspect-part', 'aspect-fuel']
+27
+mesin vario 125 memang paling gesit di antara yang lainnya.
+TEST:  ['aspect-machine']
+PRED:  ['aspect-machine']
+28
+mesin halus spontan bbm irit gaya enggak ketinggalan. terima kasih kalau pengalaman saya enggak sama dengan pemakai vario 125 esp enggak sama mohon dimaafkan.
+TEST:  ['aspect-machine', 'aspect-fuel', 'aspect-part']
+PRED:  ['aspect-machine', 'aspect-fuel']
+29
+vario sangat top untuk motor harian, irit di bahan bakar sangat nyaman saat dipakai jarak jauh maupun jarak dekat.
+TEST:  ['aspect-others', 'aspect-fuel']
+PRED:  ['aspect-others', 'aspect-fuel']
+30
+honda vario 125 tenaga besar lebih cepat irit lagi motor selalu stabil ke jalanan yang kecil juga lebih mudah di jalan lebar lebih gesit
+TEST:  ['aspect-fuel', 'aspect-machine']
+PRED:  ['aspect-machine', 'aspect-fuel']
+31
+gila sih mobilio mesinnya sering banget ngadat.
+TEST:  ['aspect-machine']
+PRED:  ['aspect-machine']
+32
+xpander mesinnya ngegeber terus bang, ngeri dah saya.
+TEST:  ['aspect-machine']
+PRED:  ['aspect-machine']
+33
+daihatsu xenia mesinnya sering turun, kampung!
+TEST:  ['aspect-machine']
+PRED:  ['aspect-machine']
+34
+temen saya kemarin mesin mobilnya meledak dong. dia pakai xenia.
+TEST:  ['aspect-machine']
+PRED:  ['aspect-machine']
+35
+honda brio kecil, tapi kok enggak gesit ya mesinnya.
+TEST:  ['aspect-machine']
+PRED:  ['aspect-machine']
+36
+sudah bertahun-tahun pakai xexi 2009, mesinnya masih halus banget.
+TEST:  ['aspect-machine']
+PRED:  ['aspect-machine']
+37
+mobil xpander saya kok suara mesinnya berisik banget, ya.
+TEST:  ['aspect-machine']
+PRED:  ['aspect-machine']
+38
+toyota calya mesinnya alus banget, gesit pula.
+TEST:  ['aspect-machine']
+PRED:  ['aspect-machine']
+39
+daihatsu alya kurang tangguh nih mesinnya.
+TEST:  ['aspect-machine']
+PRED:  ['aspect-machine']
+40
+saya punya gl xv at 2012, saya pribadi sangat mengapresiasi dengan after sales services-nya pihak nissan yang bagus.
+TEST:  ['aspect-service']
+PRED:  ['aspect-others']
+41
+fu150 tahun 2014 perawatan murah, lari termasuk lincah dan enak saat macet, lubang kecil apa pun masuk.
+TEST:  ['aspect-others', 'aspect-service', 'aspect-machine']
+PRED:  ['aspect-service']
+42
+honda spacy praktis cocok dalam perjalanan anda. ekstra boks yang mantap. mudah perawatan dan suku cadang yang memadai. mantap tariknya halus suaranya.
+TEST:  ['aspect-others', 'aspect-part', 'aspect-service', 'aspect-machine']
+PRED:  ['aspect-service']
+43
+masalah nopol mohon dipercepat motor scoopy saya mas. masalahnya dari tanggal 14 desember motor datang. sampai hari ini tanggal 11 januari pelatnya enggak datang-datang juga. katanya paling lama 15 hari kerja.
+TEST:  ['aspect-service']
+PRED:  ['aspect-others', 'aspect-service']
+44
+honda vario tenaga oke, bengkel resmi banyak sekali sampe di daerah, sparepart banyak, purnajual bagus.
+TEST:  ['aspect-machine', 'aspect-service', 'aspect-part', 'aspect-price']
+PRED:  ['aspect-service']
+45
+stnk baru datang pas 7 hari. kalau dilihat dari tanggal cetaknya sih prosesnya cuma 3 hari waduh. terus masalah gps gue dapat info 2 minggu setelah stnk jadi harus dikejar terus juragan toyota mah hadeh
+TEST:  ['aspect-service']
+PRED:  []
+46
+aslilah ini inden fortuner saja harus sampai sembilan bulan begini, lama benar.
+TEST:  ['aspect-service']
+PRED:  ['aspect-others']
+47
+inden x-pander saja hanya tiga bulan, lah ini esemka tiga tahun, ini mobil apa tank?
+TEST:  ['aspect-service']
+PRED:  ['aspect-others']
+48
+mekanik langganan sama bengkel resmi beda banget rasanya -_- bengkel resmi honda malah bikin oli rembes sama tarikan berat dah.
+TEST:  ['aspect-service']
+PRED:  ['aspect-service']
+49
+masih juga belum ada mekanik parahlah pelayanannya bengkel resminya yamaha.
+TEST:  ['aspect-service']
+PRED:  ['aspect-service']
+50
+ganti shock depan & olinya segala macem kena 450 ribu di bengkel resmi toyota, lebih mahal daripada bengkel biasa.
+TEST:  ['aspect-service']
+PRED:  ['aspect-service']
+51
+aksesoris di bengkel resmi ahass komplit banget.
+TEST:  ['aspect-service']
+PRED:  ['aspect-service']
+52
+bengkel gak resmi kok kelihatan lebih ngerasa aman dari pada di bengkel resminya.
+TEST:  ['aspect-service']
+PRED:  ['aspect-service']
+53
+kalau mau beli aksesoris xpander lebih baik di bengkel resmi mitsubishi, lebih murah dan kualitasnya bagus.
+TEST:  ['aspect-service']
+PRED:  ['aspect-service']
+54
+montir di bengkel resmi kayaknya lebih hebat dan berpengalaman, ya.
+TEST:  ['aspect-service']
+PRED:  ['aspect-service']
+55
+saya selalu servis di bengkel resmi dan selalu puas dengan pelayanannya.
+TEST:  ['aspect-service']
+PRED:  ['aspect-service']
+56
+ganti oli di bengkel resmi lebih murah, guys.
+TEST:  ['aspect-service']
+PRED:  ['aspect-service']
+57
+saya mendapatkan pelayanan yang buruk di bengkel resmi yamaha cihampelas.
+TEST:  ['aspect-service']
+PRED:  ['aspect-service']
+58
+bengkel resmi nissan indonesia lama pelayanannya.
+TEST:  ['aspect-service']
+PRED:  ['aspect-service']
+59
+saya sih cat ulang di bengkel resminya toyota, lebih murah dan hasilnya memuaskan.
+TEST:  ['aspect-service']
+PRED:  ['aspect-service']
+60
+desain eksteriornya padahal sudah oke banget. tetapi kenapa desain interiornya biasa banget.
+TEST:  ['aspect-part']
+PRED:  ['aspect-part']
+61
+saya punya nissan gl tahun 2013 nih tetapi masalahnya di kaki kurang enak suka jedag jeduk
+TEST:  ['aspect-part']
+PRED:  ['aspect-others', 'aspect-part']
+62
+saya punya gl xv at 2012, roof monitor lumayan berguna buat family user, yang punya anak kecil yang duduk di belakang setidaknya ada hiburan selama perjalanan.
+TEST:  ['aspect-part']
+PRED:  ['aspect-part']
+63
+bener banget tuh ridwan, gl saya juga masalahnya mirip banget terutama ac bikin masuk angin wkwkwkwkw
+TEST:  ['aspect-part']
+PRED:  ['aspect-machine']
+64
+grand livina tuh cuma 1 kesalahan fatal dan bikin enggak suka itu ya enggak ada double blower-nya mana ac tengahnya enggak begitu kerasa kalau siang bolong.
+TEST:  ['aspect-part']
+PRED:  ['aspect-part']
+65
+ac-nya nissan gl enggak enak. kalau pas hujan pakai ac dingin banget, kalau enggak pakai kaca mengembun.
+TEST:  ['aspect-part']
+PRED:  ['aspect-part']
+66
+saya punya 2008 livina x-gear matic enggak bosan-bosan pakainya, suspensinya tidak tertahankan kak, empuk banget serasa bawa mobil eropa.
+TEST:  ['aspect-others', 'aspect-part']
+PRED:  ['aspect-others']
+67
+saya kira cuma saya saja yang mengira jok mobilio yang dahulu kayak pocong.
+TEST:  ['aspect-part']
+PRED:  ['aspect-part']
+68
+gue juga pakai mobilio facelift tipe e. klakson diganti keong karena suara aslinya cempreng enggak suka banget suaranya murahan.
+TEST:  ['aspect-part']
+PRED:  ['aspect-machine', 'aspect-part']
+69
+mobilio soal kualitas material parah terutama dashboard-nya sama bangku, pintu, kelihatan banget "murahan".
+TEST:  ['aspect-part']
+PRED:  ['aspect-part']
+70
+fortuner interiornya lebih mewah, tapi boros banget bensinnya.
+TEST:  ['aspect-part', 'aspect-fuel']
+PRED:  ['aspect-part', 'aspect-fuel']
+71
+kok fortuner enggak ada air bag-nya ya.
+TEST:  ['aspect-part']
+PRED:  ['aspect-part']
+72
+pertama lihat xride 125 langsung jatuh hati sama penampilannya, makanya pas mau beli enggak pakai pikir panjang lagi, langsung memutuskan ambil xride, lampu depannya itu lo keren banget, dan tempat duduknya nyaman banget, bodinya yang agak tinggi bikin enggak pegal yang bonceng, setangnya bergaya banget. pokoknya jatuh cinta banget sama motor ini.
+TEST:  ['aspect-part']
+PRED:  ['aspect-part']
+73
+satria fu sangat merajai di kelasnya, body yang ringan bisa membuat gesit untuk jalanan macet, desain yang elegan dan modern membuat jadi perhatian di jalanan
+TEST:  ['aspect-others', 'aspect-part']
+PRED:  ['aspect-part']
+74
+yang paling menolong dari honda spacy bisa banget diajak belanja karena dengan bodinya yang gendut otomatis bagasinya lega terus leg room-nya juga bisa muat 2 galon air mineral.
+TEST:  ['aspect-part']
+PRED:  ['aspect-part']
+75
+keluaran pcx 2018 terbaru sangat maknyus. harga langsung bisa bersaing di kelasnya. tarikan enggak kalah, desain apalagi, lampu lebih futuristik daripada yang lain.
+TEST:  ['aspect-others', 'aspect-price', 'aspect-machine', 'aspect-part']
+PRED:  ['aspect-part', 'aspect-price']
+76
+saya sangat tertarik dengan jenis motor ini. scoopy. terlihat cantik, elegan dan seksi. apalagi untuk wanita seperti saya.
+TEST:  ['aspect-part']
+PRED:  ['aspect-others']
+77
+motor scoopy yang didesain lebih ekslkusif dan bentuk yang lebih ramping membuat lebih indah dan nyaman untuk berkendara.
+TEST:  ['aspect-part']
+PRED:  ['aspect-others']
+78
+motor yamaha nmax memiliki desain yang lucu dan bisa memuat lumayan cukup barang, bisa diajak ke mana pun.
+TEST:  ['aspect-others', 'aspect-part']
+PRED:  ['aspect-part']
+79
+menurut saya yamaha nmax adalah motor yang nyaman. bodinya yang unik menurut saya makin membuat saya pede pada saat memakainya. apalagi warnanya yang biasa namun terlihat elegan, spion yang membuat saya bisa melihat ke arah belakang lebih luas mempermudah saya dalam berkendara.
+TEST:  ['aspect-others', 'aspect-part']
+PRED:  ['aspect-others', 'aspect-part']
+80
+mobilio bensinnya irit betul.
+TEST:  ['aspect-fuel']
+PRED:  ['aspect-fuel']
+81
+buat kalian yang bingung mau cari motor, pilih saja yamaha, gue saja pakai yamaha dari gue masih kerja sampai punya anak, tetap saja yamaha pilihan gue, sudah begitu bensinnya irit banget, pokoknya yang terbaik buat yamaha
+TEST:  ['aspect-fuel']
+PRED:  ['aspect-fuel']
+82
+saya baru beli suzuki satria 1 bulan yang lalu, awalnya ragu karena banyak yang bilang motor ini boros bahan bakar, ternyata memang benar.
+TEST:  ['aspect-fuel']
+PRED:  ['aspect-fuel']
+83
+honda scoopy ternyata memang sesuai dengan ekspektasi saya. selain desainnya keren motor ini dilengkapi berbagai fitur dan juga bensin yang irit banget karena bisa dipakai sampai seminggu.
+TEST:  ['aspect-part', 'aspect-fuel']
+PRED:  ['aspect-part', 'aspect-fuel']
+84
+jangan ragu pilih motor honda karena memang irit bahan bakar dan ramah lingkungan saya sudah membuktikan sendiri dengan memakai honda scoopy.
+TEST:  ['aspect-fuel']
+PRED:  ['aspect-fuel']
+85
+selain irit bahan bakar motor scoopy juga stabil dalam berkendaraan.
+TEST:  ['aspect-others', 'aspect-fuel']
+PRED:  ['aspect-fuel']
+86
+menurut saya vario 125 irit dan efisien, mesinnya andal dan kuat.
+TEST:  ['aspect-fuel', 'aspect-machine']
+PRED:  ['aspect-machine', 'aspect-fuel']
+87
+vario 125 bisa diadu iritnya dengan motor lain sekelasnya.
+TEST:  ['aspect-fuel']
+PRED:  ['aspect-others']
+88
+memang cuma avanza yang bensinnya irit seirit-iritnya irit.
+TEST:  ['aspect-fuel']
+PRED:  ['aspect-fuel']
+89
+xenia juga kalau bensin mah tidak kalah irit, bro.
+TEST:  ['aspect-fuel']
+PRED:  ['aspect-fuel']
+90
+fortuner sih yang boros banget kalo soal bbm.
+TEST:  ['aspect-fuel']
+PRED:  ['aspect-fuel']
+91
+daihatsu agya irit banget kalo urusan bensin mah yang lain lewat.
+TEST:  ['aspect-fuel']
+PRED:  ['aspect-fuel']
+92
+honda pcx lumayan boros juga ya bbmnya hem.
+TEST:  ['aspect-fuel']
+PRED:  ['aspect-fuel']
+93
+kalau mau irit bensin sih lebih baik pakai honda scoopy, teman.
+TEST:  ['aspect-fuel']
+PRED:  ['aspect-fuel']
+94
+nissan grand livina kok boros ya konsumsi bensinnya.
+TEST:  ['aspect-fuel']
+PRED:  ['aspect-fuel']
+95
+gila lah ini xpander boros banget coi gue pake premium.
+TEST:  ['aspect-fuel']
+PRED:  ['aspect-fuel']
+96
+kijang inova gue sudah lima tahun konsumsi bensinnya masih lumayan iritlah untuk hitungan mobil tua mah.
+TEST:  ['aspect-fuel']
+PRED:  []
+97
+bensin honda ar-v aku kok akhir-akhir ini boros banget ya bensinnya.
+TEST:  ['aspect-fuel']
+PRED:  ['aspect-fuel']
+98
+toyota rush saya konsumsi bensinnya oke banget, nih. nyaman di kantong.
+TEST:  ['aspect-fuel']
+PRED:  ['aspect-others']
+99
+jangan mau pakai vios, bensinnya parah banget borosnya. tekor saya.
+TEST:  ['aspect-fuel']
+PRED:  ['aspect-others']
+100
+jujur motor yahama r15 v3 sahabat gue banget. harganya ekonomis dan mesinnya tangguh.
+TEST:  ['aspect-price', 'aspect-machine']
+PRED:  ['aspect-machine', 'aspect-price']
+101
+merek honda pcx memang kendaraan bermotor yang mempunyai nilai jual tinggi dan desainnya yang eksklusif
+TEST:  ['aspect-price', 'aspect-part']
+PRED:  ['aspect-part']
+102
+honda vario memiliki desain yang selalu mengikuti kebutuhan zaman yang modern, ekonomis pula.
+TEST:  ['aspect-price', 'aspect-part']
+PRED:  ['aspect-part']
+103
+dengan harga yang murah, kita sudah mendapatkan kendaraan yang eksklusif untuk kelas matic lewat honda scoopy.
+TEST:  ['aspect-price']
+PRED:  ['aspect-price']
+104
+sekadar info avanza 1300 matic sekarang lebih mahal 10-15 juta
+TEST:  ['aspect-price']
+PRED:  ['aspect-price']
+105
+dengan harganya terjangkau mobil avanza ini masih digemari masyarakat indonesia sebagai mobil keluarga pilihan
+TEST:  ['aspect-price']
+PRED:  ['aspect-others', 'aspect-price']
+106
+semakin ke sini harga avanza kenapa menjadi semakin mahal, deh.
+TEST:  ['aspect-price']
+PRED:  ['aspect-price']
+107
+harga purnajual xenia masih tinggi, coi!
+TEST:  ['aspect-price']
+PRED:  ['aspect-price']
+108
+honda mobilio harga purnajualnya jatuh, gan.
+TEST:  ['aspect-price']
+PRED:  ['aspect-price']
+109
+kalau mau murah beli saja brio, lumayan untuk keluarga kecil mah bisa.
+TEST:  ['aspect-price']
+PRED:  ['aspect-price']
+110
+yamaha mio ekonomis nih untuk keluarga kelas menengah.
+TEST:  ['aspect-price']
+PRED:  ['aspect-others']
+111
+yang paling cocok untuk mahasiswa memang vario lah dari segi harga mah.
+TEST:  ['aspect-price']
+PRED:  ['aspect-others', 'aspect-price']
+112
+cucok banget nih harga revo x fi sangat ramah konsumen.
+TEST:  ['aspect-price']
+PRED:  ['aspect-price']
+113
+dengan spesifikasi begitu, yamaha nmax mah mahal banget coi.
+TEST:  ['aspect-price']
+PRED:  ['aspect-price']
+114
+jangan mau beli aerox 155, jelek dan mahal pula.
+TEST:  ['aspect-price', 'aspect-others']
+PRED:  ['aspect-price']
+115
+saya pikir murah, honda scoopy esp ternyata mahal juga ya.
+TEST:  ['aspect-price']
+PRED:  ['aspect-price']
+116
+kalau mau mobil yang bagus dan murah bisa pilih daihatsu terios.
+TEST:  ['aspect-others', 'aspect-price']
+PRED:  ['aspect-others', 'aspect-price']
+117
+grandmax kok harganya naik, sih.
+TEST:  ['aspect-price']
+PRED:  ['aspect-price']
+118
+kakak gue beli suzuki carry gak sebanding sama harganya yang mahal.
+TEST:  ['aspect-price']
+PRED:  ['aspect-price']
+119
+toyota calya mobil bagus, harga oke.
+TEST:  ['aspect-others', 'aspect-price']
+PRED:  ['aspect-price']
