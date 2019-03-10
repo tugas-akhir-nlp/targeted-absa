@@ -3,11 +3,15 @@ __pycache__/
 *.py[cod]
 *$py.class
 __init__.py
+postag_test_auto.json
+postag_train_auto.json
+w2v_path.txt
 
 # Distribution / packaging
 .Python
 model/
 data/
+
 .vscode/
 
 # Jupyter Notebook
