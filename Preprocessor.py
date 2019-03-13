@@ -4,7 +4,8 @@ import numpy as np
 
 from gensim.models import Word2Vec
 
-from keras.preprocessing.text import Tokenizer, text_to_word_sequence
+from keras.utils import to_categorical
+from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 
 MAX_LENGTH = 100
@@ -44,8 +45,8 @@ class Preprocessor():
         if self.remove_punct:
             text_splitted = text.split()
             result = list()
-            for t in text_splitted:
-                result.append(''.join(ch for ch in t if ch not in self.punctuations))
+            for text in text_splitted:
+                result.append(''.join(ch for ch in text if ch not in self.punctuations))
         return ' '.join(result)
 
     def __mask_entity(self, text):
@@ -66,10 +67,24 @@ class Preprocessor():
 
         return json_train, json_test
 
+    def __load_pos(self):
+        with open('resource/postag_train_auto.json') as f:
+            pos_train = json.load(f)
+
+        with open('resource/postag_test_auto.json') as f:
+            pos_test = json.load(f)
+
+        return pos_train, pos_test
+
+    def __load_pos_dict(self):
+        with open('resource/pos_dict.json') as f:
+            pos_dict = json.load(f)
+        return pos_dict
+
     def __read_data(self, json_data):
         review = list()
-        for i in range(len(json_data)):
-            temp = self.__lower(json_data[i]['text'])
+        for data in json_data:
+            temp = self.__lower(data['text'])
             temp = self.__remove_punct(temp)
             review.append(temp)
 
@@ -87,6 +102,21 @@ class Preprocessor():
             label.append(temp)
 
         return np.array(label)
+    
+    def __read_pos(self, json_data):
+        pos = list()
+        pos_dict = self.__load_pos_dict()
+        for data in json_data:
+            temp = np.zeros(MAX_LENGTH, dtype=int)
+            idx = 0
+            for sentence in data['sentences']:
+                for i, token in sentence['tokens']:
+                    if i >= MAX_LENGTH:
+                        continue
+                    temp[idx] = pos_dict[token['pos_tag']]
+                    idx += 1
+            pos.append(temp)
+        return pos
 
     def get_tokenized(self):
         json_train, _ = self.__load_json()
@@ -122,9 +152,9 @@ class Preprocessor():
         words = list(w2v.wv.vocab)
         embeddings_index = dict()
 
-        for f in range(len(words)):
-            coefs = w2v[words[f]]
-            embeddings_index[words[f]] = coefs
+        for word in words:
+            coefs = w2v[word]
+            embeddings_index[word] = coefs
 
         vocab_size = self.get_vocab_size(tokenizer)
         embedding_matrix = np.zeros((vocab_size, EMBEDDING_SIZE))
@@ -139,11 +169,32 @@ class Preprocessor():
         return embedding_matrix
 
     def get_embedded_input(self, review):
+        tokenizer = self.get_tokenized()
+        words = tokenizer.word_index
+        embedding_matrix = self.get_embedding_matrix(tokenizer)
+
+        json_train, json_test = self.__load_json()
+        review = self.__read_data(json_train)
+        review_test = self.__read_data(json_test)
+
+        review_list = [review, review_test]
+
+        for reviews in review_list:
+            for review in reviews:
+                splitted = review.split()
+                temp = list()
+                for word, i in splitted:
+                    if word in words and i < MAX_LENGTH:
+                        temp.append(embedding_matrix[words[word]])
+                    else:
+                        temp.append(np.zeros(EMBEDDING_SIZE))
+                len_review = len(temp)
+                for i in range(len_review, MAX_LENGTH):
+                    temp.append(np.zeros(EMBEDDING_SIZE))
         return review
 
     def get_pos_matrix(self):
         return np.random.rand(27, 30)
 
-    def get_encoded_pos(self, review):
-        return review
-
+    def get_encoded_pos(self, pos):
+        return to_categorical(pos, num_classes = 26)
