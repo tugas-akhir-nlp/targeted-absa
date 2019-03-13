@@ -2,15 +2,18 @@ from Preprocessor import Preprocessor
 from Preprocessor import MAX_LENGTH, EMBEDDING_SIZE, ASPECTS
 
 import tensorflow as tf
+import numpy as np
+import os
 
 from sklearn.metrics import f1_score, recall_score, precision_score, accuracy_score
 
 from keras import backend as k
+from keras.preprocessing.sequence import pad_sequences
 from keras.models import Model, load_model
 from keras.layers import Dense, Dropout, Input, Embedding, TimeDistributed
 from keras.layers import GRU, LSTM, Bidirectional, GlobalMaxPool1D, Conv1D, MaxPooling1D
 
-# https://www.kaggle.com/hireme/fun-api-keras-f1-metric-cyclical-learning-rate/code
+# https://www.kaggle.com/hireme/fun-api-keras-f1-metric-cyclical-learning-rate/code 
 def f1(y_true, y_pred):
     def recall(y_true, y_pred):
         """Recall metric.
@@ -44,24 +47,29 @@ def f1(y_true, y_pred):
     return 2*((precision*recall)/(precision+recall+k.epsilon()))
 
 class AspectCategorizer():
+    config_file = 'config.json'
+    weight_file = 'model.h5'
+
     def __init__ (
-        self, 
-        normalize = False,
-        lowercase = True,
-        remove_punct = True,
-        masking = False,
-        embedding = True,
-        trainable_embedding = True,
-        pos_tag = None,
-        use_rnn = True,
-        rnn_type = 'lstm',
-        use_cnn = False,
-        use_attention = False,
-        n_neuron = 128,
-        n_dense = 1,
-        dropout = 0.5,
-        optimizer = 'adam',
-        ):
+            self,
+            normalize = False,
+            lowercase = True,
+            remove_punct = True,
+            masking = False,
+            embedding = True,
+            trainable_embedding = True,
+            pos_tag = None,
+            dependency = None,
+            use_rnn = True,
+            rnn_type = 'lstm',
+            use_cnn = False,
+            use_svm = False,
+            use_stacked_svm = False,
+            use_attention = False,
+            n_neuron = 128,
+            n_dense = 1,
+            dropout = 0.5,
+            optimizer = 'adam'):
         self.preprocessor  =  Preprocessor(
             normalize = normalize,
             lowercase = lowercase,
@@ -76,9 +84,12 @@ class AspectCategorizer():
         self.embedding = embedding
         self.trainable_embedding = trainable_embedding
         self.pos_tag = pos_tag
+        self.dependency = dependency
         self.use_rnn = use_rnn
         self.rnn_type = rnn_type
         self.use_cnn = use_cnn
+        self.use_svm = use_svm
+        self.use_stacked_svm = use_stacked_svm
         self.use_attention = use_attention
         self.n_neuron = n_neuron 
         self.n_dense = n_dense 
@@ -94,8 +105,8 @@ class AspectCategorizer():
             embedding_matrix = self.preprocessor.get_embedding_matrix(self.tokenizer)
             main_input = Input(shape=(MAX_LENGTH,), dtype='int32', name='main_input')
             x = Embedding(
-                output_dim=EMBEDDING_SIZE, 
-                input_dim=vocab_size, 
+                output_dim=EMBEDDING_SIZE,
+                input_dim=vocab_size,
                 input_length=MAX_LENGTH,
                 weights=[embedding_matrix],
                 trainable=self.trainable_embedding,
@@ -105,14 +116,14 @@ class AspectCategorizer():
                 pos_matrix = self.preprocessor.get_pos_matrix(review)
                 pos_input = Input(shape=(MAX_LENGTH,), dtype='int32', name='pos_input')
                 x2 = Embedding(
-                    output_dim=30, 
-                    input_dim=pos_size, 
+                    output_dim=30,
+                    input_dim=pos_size,
                     input_length=MAX_LENGTH,
                     weights=[pos_matrix],
                     trainable=self.trainable_embedding,
                 )(pos_input)
                 x = keras.layers.concatenate([x, x2])
-                
+
         else:
             embedded_input = self.preprocessor.get_embedded_input(review)
 
@@ -141,19 +152,19 @@ class AspectCategorizer():
             model = Model([main_input, pos_input], out)
         else:
             model = Model(main_input, out)
-            
+
         model.summary()
         model.compile(
-            loss='binary_crossentropy', 
-            optimizer=self.optimizer, 
+            loss='binary_crossentropy',
+            optimizer=self.optimizer,
             metrics=[f1]
         )
 
         return model
 
     def train(
-        self, 
-        x_train, 
+        self,
+        x_train,
         y_train,
         batch_size = 16,
         epochs = 5,
@@ -161,8 +172,8 @@ class AspectCategorizer():
         validation_split = 0.0,
         cross_validation = False,
         n_fold = 3,
-        callbacks = None
-        ):
+        grid_search = False,
+        callbacks = None):
 
         model = self.__build_model()
 
@@ -186,10 +197,11 @@ class AspectCategorizer():
 
     def evaluate(self, x_train, y_train, x_test, y_test):
         x = [x_train, x_test, y_train, y_test]
-        x_pos = [pos_train, pos_test]
-        x_name = ['TRAIN', 'TEST']
+        # x_pos = [pos_train, pos_test]
+        x_name = ['Train-All', 'Test-All']
 
         print("======================= EVALUATION =======================")
+        print('{:10s} {:10s} {:10s} {:10s}'.format('ASPECT', 'PREC', 'RECALL', 'F1'))
 
         for i in range(2):
             if self.pos_tag is 'embedding':
@@ -209,15 +221,9 @@ class AspectCategorizer():
             recall = recall_score(y_true, y_pred, average='micro')
             f1 = f1_score(y_true, y_pred, average='micro')
 
-            print(x_name[i])
-            print('Akurasi : ', acc)
-            print('Precision : ', precision)
-            print('Recall : ', recall)
-            print('F1 : ', f1, '\n')
+            print('{:10s} {:<10.4f} {:<10.4f} {:<10.4f} '.format(x_name[i], precision, recall, f1))
 
     def evaluate_each_aspect(self, x_test, y_test):
-        print("=============== EVALUATION FOR EACH ASPECT ===============")
-
         if self.pos_tag is 'embedding':
             y_pred = self.model.predict([x_test, pos_test])
         else:
@@ -245,7 +251,9 @@ class AspectCategorizer():
             precision = precision_score(y_truelist[i], y_predlist[i])
             recall = recall_score(y_truelist[i], y_predlist[i])
             f1 = f1_score(y_truelist[i], y_predlist[i])
-            print(self.aspects[i], f1)
+            print('{:10s} {:<10.4f} {:<10.4f} {:<10.4f} '.format(self.aspects[i], precision, recall, f1))
+        print('\n')
+
 
     def predict(self, new):
         encoded_new = self.tokenizer.texts_to_sequences([new.lower()])
@@ -256,13 +264,22 @@ class AspectCategorizer():
         for i in range(len(pred)):
             for j in range(len(pred[i])):
                 if (pred[i][j] > 0.5):
-                    label.append(aspects[j])
+                    label.append(self.aspects[j])
 
+        print("======================= PREDICTION =======================" )
+        print(new)
+        print(label)
         return label
 
-    def save(self, file_path):
-        self.model.save(file_path)
+    def save(self, dir_path):
+        if not os.path.exists(dir_path):
+            print("Making the directory: {}".format(dir_path))
+            os.mkdir(dir_path)
+        self.model.save(os.path.join(dir_path, self.weight_file))
 
-    def load(self, file_path, custom={'f1':f1}):
-        aspectModel = load_model(file_path, custom_objects=custom)
+    def load(self, dir_path, custom={'f1':f1}):
+        if not os.path.exists(dir_path):
+            raise OSError('Directory \'{}\' not found.'.format(dir_path))
+        else:
+            aspectModel = load_model(os.path.join(dir_path, self.weight_file), custom_objects=custom)
         return aspectModel
