@@ -94,6 +94,29 @@ class Preprocessor():
             label.append(temp)
         return np.array(label)
 
+    def read_data_for_sentiment(self, json_path):
+        json_data = self.__load_json(json_path)
+        review = list()
+        for data in json_data:
+            data_unique = np.unique(data['aspect'], axis=0)
+            for i in range(len(data_unique)):
+                temp = self.__lower(data['text'])
+                temp = self.__remove_punct(temp)
+                review.append(temp)
+        return review
+
+    def __read_sentiment(self, json_data):
+        label = np.zeros(len(json_data), dtype=int)
+        idx = 0
+        for data in json_data:
+            data_unique = np.unique(data['aspect'], axis=0)
+            for i in range(len(data_unique)):
+                if 'positive' in data_unique[i][1]:
+                    label[idx] = 1
+                idx += 1
+        label = to_categorical(label, num_classes=2)
+        return np.array(label)
+    
     def __read_pos(self, json_data):
         pos = list()
         pos_dict = self.__load_json('resource/pos_dict.json')
