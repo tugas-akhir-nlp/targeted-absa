@@ -1,18 +1,18 @@
-from aspect.AspectCategorizer import AspectCategorizer
 from Preprocessor import Preprocessor
+from aspect.AspectCategorizer import AspectCategorizer
+
+import time
 
 if __name__ == '__main__':
-    preprocessor = Preprocessor()
-    x_train, y_train, x_test, y_test = preprocessor.get_encoded_input()
     model = AspectCategorizer(
         normalize = False,
         lowercase = True,
         remove_punct = True,
         masking = False,
-        embedding = True,
+        embedding = False,
         trainable_embedding = True,
-        pos_tag = None,
-        dependency = None,
+        pos_tag = True,
+        dependency = True,
         use_rnn = True,
         rnn_type = 'lstm',
         use_cnn = False,
@@ -22,13 +22,17 @@ if __name__ == '__main__':
         n_neuron = 256,
         n_dense = 1,
         dropout = 0.5,
+        regularizer = None,
         optimizer = 'adam'
         )
+
+    x_train, y_train, x_test, y_test = model.preprocessor.get_all_input()
+
     model.train(
         x_train, 
         y_train,
-        batch_size = 16,
-        epochs = 10,
+        batch_size = 32,
+        epochs = 1,
         verbose = 1,
         validation_split = 0.0,
         cross_validation = False,
@@ -38,5 +42,11 @@ if __name__ == '__main__':
         )
     model.evaluate(x_train, y_train, x_test, y_test)
     model.evaluate_each_aspect(x_test, y_test)
-    model.predict("Bensin nya irit banget nih tapi sayang kalo buat bepergian jauh mesinnya kurang kuat.")
+
+    named_tuple = time.localtime()
+    time_string = time.strftime("%B-%d-%Y_%H-%M-%S", named_tuple)
+    model.save('aspect/model/{}'.format(time_string))
+
+    # model.predict("Bensin nya irit banget nih tapi sayang kalo buat bepergian jauh mesinnya kurang kuat.")
+    # model.predict("Pake mobil ini memang gak pernah kecewa, servis nya cepet sekali")
     print('\n')
