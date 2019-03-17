@@ -1,8 +1,9 @@
 from Preprocessor import Preprocessor
-from Preprocessor import MAX_LENGTH, EMBEDDING_SIZE, ASPECTS
+from Preprocessor import MAX_LENGTH, EMBEDDING_SIZE, ASPECT_LIST
 
 import tensorflow as tf
 import numpy as np
+import json
 import os
 
 from sklearn.metrics import f1_score, recall_score, precision_score, accuracy_score
@@ -49,6 +50,7 @@ def f1(y_true, y_pred):
 class AspectCategorizer():
     config_file = 'config.json'
     weight_file = 'model.h5'
+    result_file = 'result.txt'
 
     def __init__ (
             self,
@@ -62,6 +64,7 @@ class AspectCategorizer():
             dependency = None,
             use_rnn = True,
             rnn_type = 'lstm',
+            return_sequence = True,
             use_cnn = False,
             use_svm = False,
             use_stacked_svm = False,
@@ -69,17 +72,24 @@ class AspectCategorizer():
             n_neuron = 128,
             n_dense = 1,
             dropout = 0.5,
-            optimizer = 'adam'):
+            regularizer = None,
+            optimizer = 'adam',
+            learning_rate = 0.001,
+            weight_decay = 0):
         self.preprocessor  =  Preprocessor(
             normalize = normalize,
             lowercase = lowercase,
             remove_punct = remove_punct,
-            masking = masking
-        )
+            masking = masking,
+            embedding = embedding,
+            pos_tag = pos_tag,
+            dependency = dependency
+        )        
         self.tokenizer = self.preprocessor.get_tokenized()
-        self.aspects = ASPECTS
+        self.aspects = ASPECT_LIST
         self.model = None
         self.history = None
+        self.result = None
 
         self.embedding = embedding
         self.trainable_embedding = trainable_embedding
@@ -94,11 +104,45 @@ class AspectCategorizer():
         self.n_neuron = n_neuron 
         self.n_dense = n_dense 
         self.dropout = dropout
+        self.regularizer = regularizer
         self.optimizer = optimizer
+        self.learning_rate = learning_rate
+        self.weight_decay = weight_decay
 
-        print("success")
+        print("Object has been created")
+
+    def __get_config(self):
+        keys = [
+            'embedding',
+            'trainable_embedding',
+            'pos_tag',
+            'dependency',
+            'use_rnn',
+            'rnn_type',
+            'use_cnn',
+            'use_svm',
+            'use_stacked_svm',
+            'use_attention',
+            'n_neuron',
+            'n_dense',
+            'dropout',
+            'regularizer',
+            'optimizer',
+            'learning_rate',
+            'weight_decay',
+            'batch_size',
+            'epochs',
+            'verbose',
+            'validation_split',
+            'cross_validation',
+            'n_fold',
+            'grid_search',
+            'callbacks',
+        ]
+        return {k: getattr(self, k) for k in keys}
 
     def __build_model(self):
+        print("Building the model...")
         vocab_size = self.preprocessor.get_vocab_size(self.tokenizer)
 
         if self.embedding:
@@ -125,18 +169,31 @@ class AspectCategorizer():
                 x = keras.layers.concatenate([x, x2])
 
         else:
-            embedded_input = self.preprocessor.get_embedded_input(review)
+            new_embedding_size = EMBEDDING_SIZE
+            if self.pos_tag is 'one_hot':
+                new_embedding_size += 27
+            if self.dependency is True:
+                new_embedding_size += 2
+            print('embedding size: ', new_embedding_size)
+            main_input = Input(shape=(MAX_LENGTH, new_embedding_size), name='main_input')
 
-        if self.pos_tag is 'one_hot':
-            encoded_pos = self.preprocessor.get_encoded_pos(review)
-
+        print("1. Input")
+        
         if self.use_rnn is True:
-            if self.rnn_type is 'gru':
-                x = Bidirectional(GRU(self.n_neuron, return_sequences=True))(x)
+            if self.embedding is True:
+                if self.rnn_type is 'gru':
+                    x = Bidirectional(GRU(self.n_neuron, return_sequences=True))(x)
+                else:
+                    x = Bidirectional(LSTM(self.n_neuron, return_sequences=True))(x)
             else:
-                x = Bidirectional(LSTM(self.n_neuron, return_sequences=True))(x)
+                if self.rnn_type is 'gru':
+                    x = Bidirectional(GRU(self.n_neuron, return_sequences=True))(main_input)
+                else:
+                    x = Bidirectional(LSTM(self.n_neuron, return_sequences=True))(main_input)
             x = GlobalMaxPool1D()(x)
             x = Dropout(self.dropout)(x)
+
+        print("2. LSTM")
 
         if self.use_cnn is True:
             pass
@@ -146,12 +203,18 @@ class AspectCategorizer():
                 x = Dense(self.n_neuron, activation='relu')(x)
                 x = Dropout(self.dropout)(x)
 
+        print("3. Dense")
+
         out = Dense(len(self.aspects), activation='sigmoid')(x)
+
+        print("4. Out")
 
         if self.pos_tag is 'embedding':
             model = Model([main_input, pos_input], out)
         else:
             model = Model(main_input, out)
+
+        print("5. Model")
 
         model.summary()
         model.compile(
@@ -159,6 +222,8 @@ class AspectCategorizer():
             optimizer=self.optimizer,
             metrics=[f1]
         )
+
+        print("6. Done")
 
         return model
 
@@ -175,15 +240,21 @@ class AspectCategorizer():
         grid_search = False,
         callbacks = None):
 
+        self.batch_size = batch_size
+        self.epochs = epochs
+        self.verbose = verbose
+        self.validation_split = validation_split
+        self.cross_validation = cross_validation
+        self.n_fold = n_fold
+        self.grid_search = grid_search
+        self.callbacks = callbacks
+        
         model = self.__build_model()
 
-        if self.pos_tag is 'embedding':
-            x_input = [x_train, pos_tag]
-        else: 
-            x_input = x_train
+        print("Training...")
 
         history = model.fit(
-            x = x_input, 
+            x = x_train, 
             y = y_train, 
             batch_size = batch_size,
             epochs = epochs, 
@@ -221,6 +292,11 @@ class AspectCategorizer():
             recall = recall_score(y_true, y_pred, average='micro')
             f1 = f1_score(y_true, y_pred, average='micro')
 
+            self.result = {
+                'pred' : y_pred,
+                'true' : y_true
+            }
+
             print('{:10s} {:<10.4f} {:<10.4f} {:<10.4f} '.format(x_name[i], precision, recall, f1))
 
     def evaluate_each_aspect(self, x_test, y_test):
@@ -254,7 +330,6 @@ class AspectCategorizer():
             print('{:10s} {:<10.4f} {:<10.4f} {:<10.4f} '.format(self.aspects[i], precision, recall, f1))
         print('\n')
 
-
     def predict(self, new):
         encoded_new = self.tokenizer.texts_to_sequences([new.lower()])
         input_new = pad_sequences(encoded_new, maxlen=MAX_LENGTH, padding='post')
@@ -276,6 +351,25 @@ class AspectCategorizer():
             print("Making the directory: {}".format(dir_path))
             os.mkdir(dir_path)
         self.model.save(os.path.join(dir_path, self.weight_file))
+        y = self.__get_config()
+        with open(os.path.join(dir_path, self.config_file), 'w') as f:
+            f.write(json.dumps(y, indent=4, sort_keys=True))
+
+        review_test = self.preprocessor.read_data_for_aspect('aspect/data/aspect_test.json')
+
+        with open(os.path.join(dir_path, self.result_file), 'w') as f:
+            for i, pred in enumerate(self.result['pred']):
+                f.write(str(i) + "\n")
+                f.write(review_test[i]+ "\n")
+                temp = list()
+                true = list()
+                for j, asp in enumerate(pred):
+                    if asp == 1:
+                        temp.append(self.aspects[j])
+                    if self.result['true'][i][j] == 1:
+                        true.append(self.aspects[j])
+                f.write("TRUE: " + json.dumps(true) + "\n")
+                f.write("PRED: " + json.dumps(temp) + "\n")
 
     def load(self, dir_path, custom={'f1':f1}):
         if not os.path.exists(dir_path):
