@@ -8,9 +8,11 @@ from keras.utils import to_categorical
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 
+from DependencyTermExtractor import DependencyTermExtractor
+
 MAX_LENGTH = 100
 EMBEDDING_SIZE = 500
-ASPECTS = [
+ASPECT_LIST = [
     'others',
     'machine',
     'part',
@@ -25,11 +27,17 @@ class Preprocessor():
             normalize=True,
             lowercase=True,
             remove_punct=True,
-            masking=True):
+            masking=True,
+            embedding=True,
+            pos_tag='one_hot',
+            dependency=True):
         self.normalize = normalize
         self.lowercase = lowercase
         self.remove_punct = remove_punct
         self.masking = masking
+        self.embedding = embedding
+        self.pos_tag = pos_tag
+        self.dependency = dependency
 
         self.punctuations = set(string.punctuation)
 
@@ -47,70 +55,54 @@ class Preprocessor():
             result = list()
             for text in text_splitted:
                 result.append(''.join(ch for ch in text if ch not in self.punctuations))
-        return ' '.join(result)
+            return ' '.join(result)
+        return text
 
     def __mask_entity(self, text):
         return text
 
     def __load_embedding(self):
+        print("Loading word embedding...")
         with open('resource/w2v_path.txt') as file:
             word2vec_path = file.readlines()[0]            
         w2v = Word2Vec.load(word2vec_path)
         return w2v
 
-    def __load_json(self):
-        with open('aspect/data/aspect_train.json') as f:
-            json_train = json.load(f)
+    def __load_json(self, path_file):
+        with open(path_file) as f:
+            json_data = json.load(f)
+        return json_data
 
-        with open('aspect/data/aspect_test.json') as f:
-            json_test = json.load(f)
-
-        return json_train, json_test
-
-    def __load_pos(self):
-        with open('resource/postag_train_auto.json') as f:
-            pos_train = json.load(f)
-
-        with open('resource/postag_test_auto.json') as f:
-            pos_test = json.load(f)
-
-        return pos_train, pos_test
-
-    def __load_pos_dict(self):
-        with open('resource/pos_dict.json') as f:
-            pos_dict = json.load(f)
-        return pos_dict
-
-    def __read_data(self, json_data):
+    def read_data_for_aspect(self, json_path):
+        json_data = self.__load_json(json_path)
         review = list()
         for data in json_data:
             temp = self.__lower(data['text'])
             temp = self.__remove_punct(temp)
             review.append(temp)
-
         return review
 
-    def __read_label(self, json_data):
+    def __read_aspect(self, json_data):
         label = list()
         for i in range(len(json_data)):
-            temp = np.zeros(len(ASPECTS), dtype=int)
+            temp = np.zeros(len(ASPECT_LIST), dtype=int)
             for aspect in range(len(json_data[i]['aspects'])):
                 if json_data[i]['aspects'] != []:
-                    for j in range(len(ASPECTS)):
-                        if ASPECTS[j] in json_data[i]['aspects'][aspect]:
+                    for j in range(len(ASPECT_LIST)):
+                        if ASPECT_LIST[j] in json_data[i]['aspects'][aspect]:
                             temp[j] = 1
             label.append(temp)
-
         return np.array(label)
-    
+
     def __read_pos(self, json_data):
         pos = list()
-        pos_dict = self.__load_pos_dict()
+        pos_dict = self.__load_json('resource/pos_dict.json')
+        
         for data in json_data:
             temp = np.zeros(MAX_LENGTH, dtype=int)
             idx = 0
             for sentence in data['sentences']:
-                for i, token in sentence['tokens']:
+                for i, token in enumerate(sentence['tokens']):
                     if i >= MAX_LENGTH:
                         continue
                     temp[idx] = pos_dict[token['pos_tag']]
@@ -119,8 +111,7 @@ class Preprocessor():
         return pos
 
     def get_tokenized(self):
-        json_train, _ = self.__load_json()
-        review = self.__read_data(json_train)
+        review = self.read_data_for_aspect('aspect/data/aspect_train.json')
 
         tokenizer = Tokenizer()
         tokenizer.fit_on_texts(review)
@@ -131,10 +122,9 @@ class Preprocessor():
 
     def get_encoded_input(self):
         tokenizer = self.get_tokenized()
-        json_train, json_test = self.__load_json()
 
-        review = self.__read_data(json_train)
-        review_test = self.__read_data(json_test)
+        review = self.read_data_for_aspect('aspect/data/aspect_train.json')
+        review_test = self.read_data_for_aspect('aspect/data/aspect_test.json')
 
         encoded_data = tokenizer.texts_to_sequences(review)
         encoded_data_test = tokenizer.texts_to_sequences(review_test)
@@ -142,15 +132,14 @@ class Preprocessor():
         x_train = pad_sequences(encoded_data, maxlen=MAX_LENGTH, padding='post')
         x_test = pad_sequences(encoded_data_test, maxlen=MAX_LENGTH, padding='post')
 
-        y_train = self.__read_label(json_train)
-        y_test = self.__read_label(json_test)
-
-        return x_train, y_train, x_test, y_test
+        return x_train, x_test
 
     def get_embedding_matrix(self, tokenizer):
         w2v = self.__load_embedding()
         words = list(w2v.wv.vocab)
         embeddings_index = dict()
+
+        print("Creating embedding matrix...")
 
         for word in words:
             coefs = w2v[word]
@@ -168,33 +157,94 @@ class Preprocessor():
 
         return embedding_matrix
 
-    def get_embedded_input(self, review):
-        tokenizer = self.get_tokenized()
-        words = tokenizer.word_index
-        embedding_matrix = self.get_embedding_matrix(tokenizer)
+    def get_embedded_input(self):
+        w2v = self.__load_embedding()
 
-        json_train, json_test = self.__load_json()
-        review = self.__read_data(json_train)
-        review_test = self.__read_data(json_test)
+        words = list(w2v.wv.vocab)
+
+        print("Getting all embedding vector...")
+
+        review = self.read_data_for_aspect('aspect/data/aspect_train.json')
+        review_test = self.read_data_for_aspect('aspect/data/aspect_test.json')
 
         review_list = [review, review_test]
 
-        for reviews in review_list:
+        x_train = list()
+        x_test = list()
+
+        x_list = [x_train, x_test]
+
+        for i, reviews in enumerate(review_list):
             for review in reviews:
                 splitted = review.split()
                 temp = list()
-                for word, i in splitted:
+                for j, word in enumerate(splitted):
                     if word in words and i < MAX_LENGTH:
-                        temp.append(embedding_matrix[words[word]])
+                        temp.append(w2v[word])
                     else:
                         temp.append(np.zeros(EMBEDDING_SIZE))
                 len_review = len(temp)
-                for i in range(len_review, MAX_LENGTH):
+                for j in range(len_review, MAX_LENGTH):
                     temp.append(np.zeros(EMBEDDING_SIZE))
-        return review
+                x_list[i].append(temp)
+            
+        return x_train, x_test
 
     def get_pos_matrix(self):
         return np.random.rand(27, 30)
 
     def get_encoded_pos(self, pos):
         return to_categorical(pos, num_classes = 26)
+
+    def get_encoded_term(self, trees):
+        e = DependencyTermExtractor()
+        term = list()
+        for i, tree in enumerate(trees):
+            temp = e.get_position_target(tree)
+            term.append(temp)
+        term = to_categorical(term, num_classes=2)
+        return term
+
+    def concatenate(self, sentences_a, sentences_b):
+        concat = list()
+        for i, sentence in enumerate(sentences_a):
+            temp = list()
+            for j, word in enumerate(sentence):
+                temp.append(np.concatenate((word, sentences_b[i][j]), axis=0))
+            concat.append(temp)
+        return np.array(concat)
+
+    def get_all_input(self):
+        if self.embedding:
+            x_train, x_test = self.get_encoded_input()
+        else:
+            x_train, x_test = self.get_embedded_input()
+            if self.pos_tag is 'one_hot':
+                json_train = self.__load_json('resource/postag_train_input.json')
+                json_test = self.__load_json('resource/postag_test_input.json')
+
+                pos_train = self.__read_pos(json_train)
+                pos_test = self.__read_pos(json_test)
+
+                encoded_train = self.get_encoded_pos(pos_train)
+                encoded_test = self.get_encoded_pos(pos_test)
+
+                x_train = self.concatenate(x_train, encoded_train)
+                x_test = self.concatenate(x_test, encoded_test)
+
+            if self.dependency is True:
+                json_train = self.__load_json('resource/dependency_train_auto.json')
+                json_test = self.__load_json('resource/dependency_train_auto.json')
+
+                encoded_train = self.get_encoded_term(json_train)
+                encoded_test = self.get_encoded_term(json_test)
+
+                x_train = self.concatenate(x_train, encoded_train)
+                x_test = self.concatenate(x_test, encoded_test)
+
+        json_train = self.__load_json('aspect/data/aspect_train.json')
+        json_test = self.__load_json('aspect/data/aspect_test.json')
+        y_train = self.__read_aspect(json_train)
+        y_test = self.__read_aspect(json_test)
+
+        return x_train, y_train, x_test, y_test
