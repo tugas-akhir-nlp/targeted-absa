@@ -277,6 +277,9 @@ class AspectCategorizer():
         print("======================= EVALUATION =======================")
         print('{:10s} {:10s} {:10s} {:10s}'.format('ASPECT', 'PREC', 'RECALL', 'F1'))
 
+        if self.validation_split > 0.0:
+            print("Best epoch : ", np.argmax(self.history.history['val_f1'])+1)
+
         for i in range(2):
             if self.pos_tag is 'embedding':
                 y_pred = self.model.predict([x[i], x_pos[i]])
