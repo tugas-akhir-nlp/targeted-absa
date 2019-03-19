@@ -24,13 +24,15 @@ ASPECT_LIST = [
 class Preprocessor():
     def __init__(
             self,
-            normalize=True,
-            lowercase=True,
-            remove_punct=True,
-            masking=True,
-            embedding=True,
-            pos_tag='one_hot',
-            dependency=True):
+            module_name = 'aspect',
+            normalize = True,
+            lowercase = True,
+            remove_punct = True,
+            masking = True,
+            embedding = True,
+            pos_tag = 'one_hot',
+            dependency = True):
+        self.module_name = module_name
         self.normalize = normalize
         self.lowercase = lowercase
         self.remove_punct = remove_punct
@@ -73,17 +75,25 @@ class Preprocessor():
             json_data = json.load(f)
         return json_data
 
+    def __load_txt(self, path_file):
+        with open(path_file) as f:
+            txt_data = f.read()
+        return txt_data
+
     def read_data_for_aspect(self, json_path):
-        json_data = self.__load_json(json_path)
+        json_data = self.__load_txt(json_path)
         review = list()
         for data in json_data:
-            temp = self.__lower(data['text'])
+            # temp = self.__lower(data['text'])
+            temp = self.__lower(data)
             temp = self.__remove_punct(temp)
             review.append(temp)
         return review
 
-    def __read_aspect(self, json_data):
+    def __read_aspect(self, json_path):
         label = list()
+        json_data = self.__load_json(json_path)
+
         for i in range(len(json_data)):
             temp = np.zeros(len(ASPECT_LIST), dtype=int)
             for aspect in range(len(json_data[i]['aspects'])):
@@ -104,18 +114,54 @@ class Preprocessor():
                 temp = self.__remove_punct(temp)
                 review.append(temp)
         return review
+    
+    def __aspect2idx(self, data):
+        print('panjang data: ', len(data))
+        new = np.zeros(len(data))
+        for i in range(len(data)):
+            if data[i] == 'others':
+                new[i] = 0
+            elif data[i] == 'machine':
+                new[i] = 1
+            elif data[i] == 'part':
+                new[i] = 2
+            elif data[i] == 'price':
+                new[i] = 3
+            elif data[i] == 'service':
+                new[i] = 4
+            elif data[i] == 'fue;':
+                new[i] = 5
+        print('sebelum di encode: ', new.shape)
+        print(new)
+        new = to_categorical(new, num_classes=6)
+        print('setelah di encode: ', new.shape)
+        print(new)
+        return new
 
-    def __read_sentiment(self, json_data):
-        label = np.zeros(len(json_data), dtype=int)
+    def __read_sentiment(self, json_path, review):
+        json_data = self.__load_json(json_path)
+        label = np.zeros(len(review), dtype=int)
+        aspect = list()
         idx = 0
         for data in json_data:
             data_unique = np.unique(data['aspect'], axis=0)
             for i in range(len(data_unique)):
                 if 'positive' in data_unique[i][1]:
                     label[idx] = 1
+                aspect.append(data_unique[i][0])
                 idx += 1
+        
         label = to_categorical(label, num_classes=2)
-        return np.array(label)
+
+        aspect = self.__aspect2idx(aspect)
+        new_aspect = list()
+        for asp in aspect:
+            temp = list()
+            for i in range(MAX_LENGTH):
+                temp.append(asp)
+            new_aspect.append(temp)
+            
+        return np.array(label), np.array(new_aspect)
     
     def __read_pos(self, json_data):
         pos = list()
@@ -187,8 +233,14 @@ class Preprocessor():
 
         print("Getting all embedding vector...")
 
-        review = self.read_data_for_aspect('aspect/data/aspect_train.json')
-        review_test = self.read_data_for_aspect('aspect/data/aspect_test.json')
+        if self.module_name is 'aspect':
+            review = self.read_data_for_aspect('aspect/data/aspect_train.json')
+            review_test = self.read_data_for_aspect('aspect/data/aspect_test.json')
+            print("Successfully read aspect data")
+        elif self.module_name is 'sentiment':
+            review = self.read_data_for_sentiment('sentiment/data/sentiment_train.json')
+            review_test = self.read_data_for_sentiment('sentiment/data/sentiment_test.json')
+            print("Successfully read sentiment data")
 
         review_list = [review, review_test]
 
@@ -211,7 +263,7 @@ class Preprocessor():
                     temp.append(np.zeros(EMBEDDING_SIZE))
                 x_list[i].append(temp)
             
-        return x_train, x_test
+        return np.array(x_train), np.array(x_test)
 
     def get_pos_matrix(self):
         return np.random.rand(27, 30)
@@ -242,7 +294,7 @@ class Preprocessor():
             x_train, x_test = self.get_encoded_input()
         else:
             x_train, x_test = self.get_embedded_input()
-            if self.pos_tag is 'one_hot':
+            if self.pos_tag == 'one_hot':
                 json_train = self.__load_json('resource/postag_train_input.json')
                 json_test = self.__load_json('resource/postag_test_input.json')
 
@@ -255,7 +307,7 @@ class Preprocessor():
                 x_train = self.concatenate(x_train, encoded_train)
                 x_test = self.concatenate(x_test, encoded_test)
 
-            if self.dependency is True:
+            if self.dependency == True:
                 json_train = self.__load_json('resource/dependency_train_auto.json')
                 json_test = self.__load_json('resource/dependency_train_auto.json')
 
@@ -265,9 +317,16 @@ class Preprocessor():
                 x_train = self.concatenate(x_train, encoded_train)
                 x_test = self.concatenate(x_test, encoded_test)
 
-        json_train = self.__load_json('aspect/data/aspect_train.json')
-        json_test = self.__load_json('aspect/data/aspect_test.json')
-        y_train = self.__read_aspect(json_train)
-        y_test = self.__read_aspect(json_test)
+        if self.module_name == 'aspect':
+            y_train = self.__read_aspect('aspect/data/aspect_train.json')
+            y_test = self.__read_aspect('aspect/data/aspect_test.json')
+        elif self.module_name == 'sentiment':
+            y_train, aspect_train = self.__read_sentiment('sentiment/data/sentiment_train.json', x_train)
+            y_test, aspect_test = self.__read_sentiment('sentiment/data/sentiment_test.json', x_test)
+
+            x_train = self.concatenate(x_train, aspect_train)
+            x_test = self.concatenate(x_test, aspect_test)
+            print(x_train.shape)
+            print(x_test.shape)
 
         return x_train, y_train, x_test, y_test
