@@ -2,8 +2,17 @@ from Preprocessor import Preprocessor
 from aspect.AspectCategorizer import AspectCategorizer
 
 import time
+from keras import backend as k
 
 if __name__ == '__main__':
+    config = tf.ConfigProto()
+    # Don't pre-allocate memory; allocate as-needed
+    config.gpu_options.allow_growth = True
+    # Only allow a total of half the GPU memory to be allocated
+    config.gpu_options.per_process_gpu_memory_fraction = 0.3
+
+    k.tensorflow_backend.set_session(tf.Session(config=config))
+
     model = AspectCategorizer(
         normalize = False,
         lowercase = True,
@@ -34,7 +43,7 @@ if __name__ == '__main__':
         batch_size = 16,
         epochs = 20,
         verbose = 1,
-        validation_split = 0.1,
+        validation_split = 0.0,
         cross_validation = False,
         n_fold = 3,
         grid_search = False,
