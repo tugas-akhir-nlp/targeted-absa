@@ -81,11 +81,11 @@ class Preprocessor():
         return txt_data
 
     def read_data_for_aspect(self, json_path):
-        json_data = self.__load_txt(json_path)
+        json_data = self.__load_json(json_path)
         review = list()
         for data in json_data:
-            # temp = self.__lower(data['text'])
-            temp = self.__lower(data)
+            temp = self.__lower(data['text'])
+            # temp = self.__lower(data)
             temp = self.__remove_punct(temp)
             review.append(temp)
         return review
@@ -180,7 +180,7 @@ class Preprocessor():
         return pos
 
     def get_tokenized(self):
-        review = self.read_data_for_aspect('aspect/data/aspect_train_tokenized.txt')
+        review = self.read_data_for_aspect('aspect/data/aspect_train.json')
 
         tokenizer = Tokenizer()
         tokenizer.fit_on_texts(review)
@@ -192,8 +192,8 @@ class Preprocessor():
     def get_encoded_input(self):
         tokenizer = self.get_tokenized()
 
-        review = self.read_data_for_aspect('aspect/data/aspect_train_tokenized.txt')
-        review_test = self.read_data_for_aspect('aspect/data/aspect_train_tokenized.txt')
+        review = self.read_data_for_aspect('aspect/data/aspect_train.json')
+        review_test = self.read_data_for_aspect('aspect/data/aspect_test.json')
 
         encoded_data = tokenizer.texts_to_sequences(review)
         encoded_data_test = tokenizer.texts_to_sequences(review_test)
@@ -234,8 +234,8 @@ class Preprocessor():
         print("Getting all embedding vector...")
 
         if self.module_name is 'aspect':
-            review = self.read_data_for_aspect('aspect/data/aspect_train_tokenized.txt')
-            review_test = self.read_data_for_aspect('aspect/data/aspect_train_tokenized.txt')
+            review = self.read_data_for_aspect('aspect/data/aspect_train.json')
+            review_test = self.read_data_for_aspect('aspect/data/aspect_test.json')
             print("Successfully read aspect data")
         elif self.module_name is 'sentiment':
             review = self.read_data_for_sentiment('sentiment/data/sentiment_train.json')
