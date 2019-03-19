@@ -32,7 +32,7 @@ if __name__ == '__main__':
         x_train, 
         y_train,
         batch_size = 16,
-        epochs = 30,
+        epochs = 20,
         verbose = 1,
         validation_split = 0.1,
         cross_validation = False,
