@@ -5,6 +5,8 @@ __pycache__/
 __init__.py
 postag_test_auto.json
 postag_train_auto.json
+dependency_train_auto.json
+dependency_test_auto.json
 w2v_path.txt
 
 # Distribution / packaging
