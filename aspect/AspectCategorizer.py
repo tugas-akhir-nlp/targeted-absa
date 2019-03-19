@@ -54,6 +54,7 @@ class AspectCategorizer():
 
     def __init__ (
             self,
+            module_name = 'aspect',
             normalize = False,
             lowercase = True,
             remove_punct = True,
@@ -77,6 +78,7 @@ class AspectCategorizer():
             learning_rate = 0.001,
             weight_decay = 0):
         self.preprocessor  =  Preprocessor(
+            module_name = module_name,
             normalize = normalize,
             lowercase = lowercase,
             remove_punct = remove_punct,
@@ -90,6 +92,7 @@ class AspectCategorizer():
         self.model = None
         self.history = None
         self.result = None
+        self.module_name = 'aspect'
 
         self.embedding = embedding
         self.trainable_embedding = trainable_embedding
@@ -298,6 +301,7 @@ class AspectCategorizer():
             }
 
             print('{:10s} {:<10.4f} {:<10.4f} {:<10.4f} '.format(x_name[i], precision, recall, f1))
+        
 
     def evaluate_each_aspect(self, x_test, y_test):
         if self.pos_tag is 'embedding':
