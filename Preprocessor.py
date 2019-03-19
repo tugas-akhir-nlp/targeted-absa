@@ -180,7 +180,7 @@ class Preprocessor():
         return pos
 
     def get_tokenized(self):
-        review = self.read_data_for_aspect('aspect/data/aspect_train.json')
+        review = self.read_data_for_aspect('aspect/data/aspect_train_tokenized.txt')
 
         tokenizer = Tokenizer()
         tokenizer.fit_on_texts(review)
@@ -192,8 +192,8 @@ class Preprocessor():
     def get_encoded_input(self):
         tokenizer = self.get_tokenized()
 
-        review = self.read_data_for_aspect('aspect/data/aspect_train.json')
-        review_test = self.read_data_for_aspect('aspect/data/aspect_test.json')
+        review = self.read_data_for_aspect('aspect/data/aspect_train_tokenized.txt')
+        review_test = self.read_data_for_aspect('aspect/data/aspect_train_tokenized.txt')
 
         encoded_data = tokenizer.texts_to_sequences(review)
         encoded_data_test = tokenizer.texts_to_sequences(review_test)
@@ -234,8 +234,8 @@ class Preprocessor():
         print("Getting all embedding vector...")
 
         if self.module_name is 'aspect':
-            review = self.read_data_for_aspect('aspect/data/aspect_train.json')
-            review_test = self.read_data_for_aspect('aspect/data/aspect_test.json')
+            review = self.read_data_for_aspect('aspect/data/aspect_train_tokenized.txt')
+            review_test = self.read_data_for_aspect('aspect/data/aspect_train_tokenized.txt')
             print("Successfully read aspect data")
         elif self.module_name is 'sentiment':
             review = self.read_data_for_sentiment('sentiment/data/sentiment_train.json')
@@ -262,7 +262,6 @@ class Preprocessor():
                 for j in range(len_review, MAX_LENGTH):
                     temp.append(np.zeros(EMBEDDING_SIZE))
                 x_list[i].append(temp)
-            
         return np.array(x_train), np.array(x_test)
 
     def get_pos_matrix(self):
