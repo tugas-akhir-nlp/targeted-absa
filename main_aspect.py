@@ -2,6 +2,8 @@ from Preprocessor import Preprocessor
 from aspect.AspectCategorizer import AspectCategorizer
 
 import time
+import tensorflow as tf
+import keras
 from keras import backend as k
 
 if __name__ == '__main__':
