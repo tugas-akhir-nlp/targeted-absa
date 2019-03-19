@@ -6,7 +6,7 @@ import numpy as np
 import json
 import os
 
-from sklearn.metrics import f1_score, recall_score, precision_score, accuracy_score
+from sklearn.metrics import accuracy_score
 
 from keras import backend as k
 from keras.preprocessing.sequence import pad_sequences
@@ -21,6 +21,7 @@ class SentimentClassifier():
 
     def __init__ (
             self,
+            module_name = 'sentiment',
             normalize = False,
             lowercase = True,
             remove_punct = True,
@@ -44,6 +45,7 @@ class SentimentClassifier():
             learning_rate = 0.001,
             weight_decay = 0):
         self.preprocessor  =  Preprocessor(
+            module_name = module_name,
             normalize = normalize,
             lowercase = lowercase,
             remove_punct = remove_punct,
@@ -57,6 +59,7 @@ class SentimentClassifier():
         self.model = None
         self.history = None
         self.result = None
+        self.module_name = 'sentiment'
 
         self.embedding = embedding
         self.trainable_embedding = trainable_embedding
@@ -136,7 +139,7 @@ class SentimentClassifier():
                 x = keras.layers.concatenate([x, x2])
 
         else:
-            new_embedding_size = EMBEDDING_SIZE
+            new_embedding_size = EMBEDDING_SIZE + 6
             if self.pos_tag is 'one_hot':
                 new_embedding_size += 27
             if self.dependency is True:
@@ -248,13 +251,10 @@ class SentimentClassifier():
                 y_pred = self.model.predict(x[i])
             y_true = x[i+2]
 
-            y_pred = np.asarray(y_pred)
-            y_true = np.asarray(y_true)
+            y_pred = np.argmax(y_pred, axis=1)
+            y_true = np.argmax(y_true, axis=1)
 
-            y_pred = (y_pred>0.5).astype(int)
-            y_true = (y_true>0).astype(int)
-
-            acc = accuracy_score(y_true.reshape([-1]), y_pred.reshape([-1]))
+            acc = accuracy_score(y_true, y_pred)
 
             self.result = {
                 'pred' : y_pred,
@@ -270,25 +270,22 @@ class SentimentClassifier():
             y_pred = self.model.predict(x_test)
         y_true = y_test
 
-        y_predlist = list()
-        y_truelist = list()
-        for i in range(len(self.aspects)):
-            tmp = list()
-            tmp = [item[i] for item in y_pred]
-            y_predlist.append(tmp)
-            tmp = list()
-            tmp = [item[i] for item in y_true]
-            y_truelist.append(tmp)
+        # y_predlist = list()
+        # y_truelist = list()
+        # for i in range(len(self.aspects)):
+        #     tmp = list()
+        #     tmp = [item[i] for item in y_pred]
+        #     y_predlist.append(tmp)
+        #     tmp = list()
+        #     tmp = [item[i] for item in y_true]
+        #     y_truelist.append(tmp)
                 
-        for i in range(len(self.aspects)):
-            y_predlist[i] = np.asarray(y_predlist[i])
-            y_truelist[i] = np.asarray(y_truelist[i])
+        # for i in range(len(self.aspects)):
+        #     y_predlist[i] = np.argmax(y_predlist[i], axis=1)
+        #     y_truelist[i] = np.argmax(y_truelist[i], axis=1)
 
-            y_predlist[i] = (y_predlist[i]>0.5).astype(int)
-            y_truelist[i] = (y_truelist[i]>0).astype(int)
-
-            acc = accuracy_score(y_truelist[i], y_predlist[i])
-            print('{:10s} {:<10.4f} '.format(self.aspects[i], acc))
+        #     acc = accuracy_score(y_truelist[i], y_predlist[i])
+        #     print('{:10s} {:<10.4f} '.format(self.aspects[i], acc))
 
         print('\n')
 
@@ -314,8 +311,9 @@ class SentimentClassifier():
             os.mkdir(dir_path)
         self.model.save(os.path.join(dir_path, self.weight_file))
         y = self.__get_config()
+        print(y)
         with open(os.path.join(dir_path, self.config_file), 'w') as f:
-            json.dumps(y, indent=4, sort_keys=True)
+            f.write(json.dumps(y, indent=4, sort_keys=True))
 
         review_test = self.preprocessor.read_data_for_sentiment('sentiment/data/sentiment_test.json')
 
@@ -332,7 +330,7 @@ class SentimentClassifier():
         #         f.write(json.dump(temp) + "\n")
         #         f.write(json.dump(true) + "\n")
 
-    def load(self, dir_path, custom={'f1':f1}):
+    def load(self, dir_path):
         if not os.path.exists(dir_path):
             raise OSError('Directory \'{}\' not found.'.format(dir_path))
         else:
