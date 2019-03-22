@@ -8,10 +8,11 @@ import os
 
 from sklearn.metrics import f1_score, recall_score, precision_score, accuracy_score
 
-from keras import backend as k
+import keras
+from keras import backend as K
 from keras.preprocessing.sequence import pad_sequences
 from keras.models import Model, load_model
-from keras.layers import Dense, Dropout, Input, Embedding, TimeDistributed
+from keras.layers import Dense, Dropout, Input, Embedding, TimeDistributed, Lambda
 from keras.layers import GRU, LSTM, Bidirectional, GlobalMaxPool1D, Conv1D, MaxPooling1D
 
 # https://www.kaggle.com/hireme/fun-api-keras-f1-metric-cyclical-learning-rate/code 
@@ -24,9 +25,9 @@ def f1(y_true, y_pred):
         Computes the recall, a metric for multi-label classification of
         how many relevant items are selected.
         """
-        true_positives = k.sum(k.round(k.clip(y_true * y_pred, 0, 1)))
-        possible_positives = k.sum(k.round(k.clip(y_true, 0, 1)))
-        recall = true_positives / (possible_positives + k.epsilon())
+        true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
+        possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
+        recall = true_positives / (possible_positives + K.epsilon())
         return recall
 
     def precision(y_true, y_pred):
@@ -37,15 +38,15 @@ def f1(y_true, y_pred):
         Computes the precision, a metric for multi-label classification of
         how many selected items are relevant.
         """
-        true_positives = k.sum(k.round(k.clip(y_true * y_pred, 0, 1)))
-        predicted_positives = k.sum(k.round(k.clip(y_pred, 0, 1)))
-        precision = true_positives / (predicted_positives + k.epsilon())
+        true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
+        predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
+        precision = true_positives / (predicted_positives + K.epsilon())
         return precision
 
     precision = precision(y_true, y_pred)
     recall = recall(y_true, y_pred)
 
-    return 2*((precision*recall)/(precision+recall+k.epsilon()))
+    return 2*((precision*recall)/(precision+recall+K.epsilon()))
 
 class AspectCategorizer():
     config_file = 'config.json'
@@ -173,14 +174,12 @@ class AspectCategorizer():
             )(main_input)
 
             if self.pos_tag is 'embedding':
-                pos_matrix = self.preprocessor.get_pos_matrix(review)
+                _, pos_size = self.preprocessor.get_pos_dict()
                 pos_input = Input(shape=(MAX_LENGTH,), dtype='int32', name='pos_input')
-                x2 = Embedding(
-                    output_dim=30,
-                    input_dim=pos_size,
-                    input_length=MAX_LENGTH,
-                    weights=[pos_matrix],
-                    trainable=self.trainable_embedding,
+                x2 = Lambda(
+                    K.one_hot, 
+                    arguments={'num_classes': pos_size}, 
+                    output_shape=(MAX_LENGTH, pos_size)
                 )(pos_input)
                 x = keras.layers.concatenate([x, x2])
 
@@ -264,13 +263,19 @@ class AspectCategorizer():
         self.n_fold = n_fold
         self.grid_search = grid_search
         self.callbacks = callbacks
-        
+
         model = self.__build_model()
 
         print("Training...")
 
+        if self.pos_tag is 'embedding':
+            pos_train = self.preprocessor.read_pos('resource/postag_train_auto.json')
+            x_input = [x_train, pos_train]
+        else:
+            x_input = x_train
+
         history = model.fit(
-            x = x_train, 
+            x = x_input, 
             y = y_train, 
             batch_size = batch_size,
             epochs = epochs, 
