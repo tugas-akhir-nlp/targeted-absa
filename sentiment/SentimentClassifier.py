@@ -22,6 +22,8 @@ class SentimentClassifier():
     def __init__ (
             self,
             module_name = 'sentiment',
+            train_file = None,
+            test_file = None,
             normalize = False,
             lowercase = True,
             remove_punct = True,
@@ -46,6 +48,8 @@ class SentimentClassifier():
             weight_decay = 0):
         self.preprocessor  =  Preprocessor(
             module_name = module_name,
+            train_file = train_file,
+            test_file = test_file,
             normalize = normalize,
             lowercase = lowercase,
             remove_punct = remove_punct,
@@ -334,5 +338,5 @@ class SentimentClassifier():
         if not os.path.exists(dir_path):
             raise OSError('Directory \'{}\' not found.'.format(dir_path))
         else:
-            aspectModel = load_model(os.path.join(dir_path, self.weight_file), custom_objects=custom)
-        return aspectModel
+            self.model = load_model(os.path.join(dir_path, self.weight_file))
+        return self.model

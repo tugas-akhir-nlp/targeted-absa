@@ -55,6 +55,8 @@ class AspectCategorizer():
     def __init__ (
             self,
             module_name = 'aspect',
+            train_file = None,
+            test_file = None,
             normalize = False,
             lowercase = True,
             remove_punct = True,
@@ -79,6 +81,8 @@ class AspectCategorizer():
             weight_decay = 0):
         self.preprocessor  =  Preprocessor(
             module_name = module_name,
+            train_file = train_file,
+            test_file = test_file,
             normalize = normalize,
             lowercase = lowercase,
             remove_punct = remove_punct,
@@ -111,6 +115,15 @@ class AspectCategorizer():
         self.optimizer = optimizer
         self.learning_rate = learning_rate
         self.weight_decay = weight_decay
+
+        self.batch_size = None
+        self.epochs = None
+        self.verbose = None
+        self.validation_split = None
+        self.cross_validation = None
+        self.n_fold = None
+        self.grid_search = None
+        self.callbacks = None
 
         print("Object has been created")
 
@@ -383,4 +396,5 @@ class AspectCategorizer():
             raise OSError('Directory \'{}\' not found.'.format(dir_path))
         else:
             aspectModel = load_model(os.path.join(dir_path, self.weight_file), custom_objects=custom)
-        return aspectModel
+            self.model = aspectModel
+        return self.model

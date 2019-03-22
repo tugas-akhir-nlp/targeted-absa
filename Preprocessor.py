@@ -25,6 +25,8 @@ class Preprocessor():
     def __init__(
             self,
             module_name = 'aspect',
+            train_file = None,
+            test_file = None,
             normalize = True,
             lowercase = True,
             remove_punct = True,
@@ -33,6 +35,8 @@ class Preprocessor():
             pos_tag = 'one_hot',
             dependency = True):
         self.module_name = module_name
+        self.train_file = train_file
+        self.test_file = test_file
         self.normalize = normalize
         self.lowercase = lowercase
         self.remove_punct = remove_punct
@@ -76,8 +80,8 @@ class Preprocessor():
         return json_data
 
     def __load_txt(self, path_file):
-        with open(path_file) as f:
-            txt_data = f.read()
+        with open(path_file, 'r', encoding='utf-8') as f:
+            txt_data = f.read().splitlines()
         return txt_data
 
     def read_data_for_aspect(self, json_path):
@@ -180,7 +184,7 @@ class Preprocessor():
         return pos
 
     def get_tokenized(self):
-        review = self.read_data_for_aspect('aspect/data/aspect_train.json')
+        review = self.read_data_for_aspect(self.train_file)
 
         tokenizer = Tokenizer()
         tokenizer.fit_on_texts(review)
@@ -192,8 +196,13 @@ class Preprocessor():
     def get_encoded_input(self):
         tokenizer = self.get_tokenized()
 
-        review = self.read_data_for_aspect('aspect/data/aspect_train.json')
-        review_test = self.read_data_for_aspect('aspect/data/aspect_test.json')
+        review = self.read_data_for_aspect(self.train_file)
+
+        if self.test_file is not None:
+            review_test = self.read_data_for_aspect(self.test_file)
+        else:
+            if self.train_file == 'aspect/data/aspect_train.json':
+                review_test = self.read_data_for_aspect('aspect/data/aspect_test.json')
 
         encoded_data = tokenizer.texts_to_sequences(review)
         encoded_data_test = tokenizer.texts_to_sequences(review_test)
@@ -234,12 +243,24 @@ class Preprocessor():
         print("Getting all embedding vector...")
 
         if self.module_name is 'aspect':
-            review = self.read_data_for_aspect('aspect/data/aspect_train.json')
-            review_test = self.read_data_for_aspect('aspect/data/aspect_test.json')
+            review = self.read_data_for_aspect(self.train_file)
+
+            if self.test_file is not None:
+                review_test = self.read_data_for_aspect(self.test_file)
+            else:
+                if self.train_file == 'aspect/data/aspect_train.json':
+                    review_test = self.read_data_for_aspect('aspect/data/aspect_test.json')
+            
             print("Successfully read aspect data")
         elif self.module_name is 'sentiment':
-            review = self.read_data_for_sentiment('sentiment/data/sentiment_train.json')
-            review_test = self.read_data_for_sentiment('sentiment/data/sentiment_test.json')
+            review = self.read_data_for_sentiment(self.train_file)
+
+            if self.test_file is not None:
+                review_test = self.read_data_for_sentiment(self.test_file)
+            else:
+                if self.train_file == 'sentiment/data/sentiment_train.json':
+                    review_test = self.read_data_for_sentiment('sentiment/data/sentiment_test.json')
+
             print("Successfully read sentiment data")
 
         review_list = [review, review_test]
@@ -317,11 +338,23 @@ class Preprocessor():
                 x_test = self.concatenate(x_test, encoded_test)
 
         if self.module_name == 'aspect':
-            y_train = self.__read_aspect('aspect/data/aspect_train.json')
-            y_test = self.__read_aspect('aspect/data/aspect_test.json')
+            y_train = self.__read_aspect(self.train_file)
+
+            if self.test_file is not None:
+                y_test = self.__read_aspect(self.test_file)
+            else:
+                if self.train_file == 'aspect/data/aspect_train.json':
+                    y_test = self.__read_aspect('aspect/data/aspect_test.json')
+
+            
         elif self.module_name == 'sentiment':
-            y_train, aspect_train = self.__read_sentiment('sentiment/data/sentiment_train.json', x_train)
-            y_test, aspect_test = self.__read_sentiment('sentiment/data/sentiment_test.json', x_test)
+            y_train, aspect_train = self.__read_sentiment(self.train_file, x_train)
+
+            if self.test_file is not None:
+                y_test, aspect_test = self.__read_sentiment(self.test_file, x_test)
+            else:
+                if self.train_file == 'sentiment/data/sentiment_train.json':
+                    y_test, aspect_test = self.__read_sentiment('sentiment/data/sentiment_test.json', x_test)
 
             x_train = self.concatenate(x_train, aspect_train)
             x_test = self.concatenate(x_test, aspect_test)
