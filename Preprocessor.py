@@ -172,7 +172,7 @@ class Preprocessor():
         pos_size = len(pos_dict) + 2
         return pos_dict, pos_size
     
-    def __read_pos(self, json_path):
+    def read_pos(self, json_path):
         pos = list()
         pos_dict, _ = self.get_pos_dict()
         json_data = self.__load_json(json_path)
@@ -187,7 +187,7 @@ class Preprocessor():
                     temp[idx] = pos_dict[token['pos_tag']]
                     idx += 1
             pos.append(temp)
-        return pos
+        return np.array(pos)
 
     def get_tokenized(self):
         review = self.read_data_for_aspect(self.train_file)
@@ -321,8 +321,8 @@ class Preprocessor():
         else:
             x_train, x_test = self.get_embedded_input()
             if self.pos_tag == 'one_hot':
-                pos_train = self.__read_pos('resource/postag_train_input.json')
-                pos_test = self.__read_pos('resource/postag_test_input.json')
+                pos_train = self.read_pos('resource/postag_train_input.json')
+                pos_test = self.read_pos('resource/postag_test_input.json')
 
                 encoded_train = self.get_encoded_pos(pos_train)
                 encoded_test = self.get_encoded_pos(pos_test)
