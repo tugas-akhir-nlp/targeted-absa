@@ -8,10 +8,13 @@ postag_train_auto.json
 dependency_train_auto.json
 dependency_test_auto.json
 w2v_path.txt
+config.json
+model.h5
+todo.txt
+*.ipynb
 
 # Distribution / packaging
 .Python
-model/
 data/
 
 .vscode/
