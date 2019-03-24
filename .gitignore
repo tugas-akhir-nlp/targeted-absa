@@ -7,6 +7,7 @@ postag_test_auto.json
 postag_train_auto.json
 dependency_train_auto.json
 dependency_test_auto.json
+DependencyTermExtractor.py
 w2v_path.txt
 config.json
 model.h5
