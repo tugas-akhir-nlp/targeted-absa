@@ -7,13 +7,14 @@ from keras import backend as k
 
 if __name__ == '__main__':
     model = AspectCategorizer(
+        train_file = 'aspect/data/aspect_train.json',
         normalize = False,
         lowercase = True,
         remove_punct = False,
         masking = False,
-        embedding = False,
+        embedding = True,
         trainable_embedding = True,
-        pos_tag = True,
+        pos_tag = 'embedding',
         dependency = True,
         use_rnn = True,
         rnn_type = 'lstm',
@@ -28,13 +29,13 @@ if __name__ == '__main__':
         optimizer = 'adam'
         )
 
-    x_train, y_train, x_test, y_test = model.preprocessor.get_all_input()
+    x_train, y_train, x_test, y_test = model.preprocessor.get_all_input_aspect()
 
     model.train(
         x_train, 
         y_train,
         batch_size = 16,
-        epochs = 20,
+        epochs = 1,
         verbose = 1,
         validation_split = 0.0,
         cross_validation = False,
@@ -47,7 +48,7 @@ if __name__ == '__main__':
 
     named_tuple = time.localtime()
     time_string = time.strftime("%B-%d-%Y_%H-%M-%S", named_tuple)
-    model.save('aspect/model/{}'.format(time_string))
+    # model.save('aspect/model/{}'.format(time_string))
 
     # model.predict("Bensin nya irit banget nih tapi sayang kalo buat bepergian jauh mesinnya kurang kuat.")
     # model.predict("Pake mobil ini memang gak pernah kecewa, servis nya cepet sekali")
