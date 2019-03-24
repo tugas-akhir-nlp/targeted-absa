@@ -1,5 +1,6 @@
 from Preprocessor import Preprocessor
 from Preprocessor import MAX_LENGTH, EMBEDDING_SIZE, ASPECT_LIST
+from metrics import f1
 
 import tensorflow as tf
 import numpy as np
@@ -15,38 +16,6 @@ from keras.models import Model, load_model
 from keras.layers import Dense, Dropout, Input, Embedding, TimeDistributed, Lambda
 from keras.layers import GRU, LSTM, Bidirectional, GlobalMaxPool1D, Conv1D, MaxPooling1D
 
-# https://www.kaggle.com/hireme/fun-api-keras-f1-metric-cyclical-learning-rate/code 
-def f1(y_true, y_pred):
-    def recall(y_true, y_pred):
-        """Recall metric.
-
-        Only computes a batch-wise average of recall.
-
-        Computes the recall, a metric for multi-label classification of
-        how many relevant items are selected.
-        """
-        true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
-        possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
-        recall = true_positives / (possible_positives + K.epsilon())
-        return recall
-
-    def precision(y_true, y_pred):
-        """Precision metric.
-
-        Only computes a batch-wise average of precision.
-
-        Computes the precision, a metric for multi-label classification of
-        how many selected items are relevant.
-        """
-        true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
-        predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
-        precision = true_positives / (predicted_positives + K.epsilon())
-        return precision
-
-    precision = precision(y_true, y_pred)
-    recall = recall(y_true, y_pred)
-
-    return 2*((precision*recall)/(precision+recall+K.epsilon()))
 
 class AspectCategorizer():
     config_file = 'config.json'
@@ -125,6 +94,11 @@ class AspectCategorizer():
         self.n_fold = None
         self.grid_search = None
         self.callbacks = None
+
+        self.result = {
+            'pred' : None,
+            'true' : None
+        }
 
         print("Object has been created")
 
@@ -289,7 +263,6 @@ class AspectCategorizer():
 
     def evaluate(self, x_train, y_train, x_test, y_test):
         x = [x_train, x_test, y_train, y_test]
-        # x_pos = [pos_train, pos_test]
         x_name = ['Train-All', 'Test-All']
 
         print("======================= EVALUATION =======================")
@@ -300,6 +273,10 @@ class AspectCategorizer():
 
         for i in range(2):
             if self.pos_tag is 'embedding':
+                pos_train = self.preprocessor.read_pos('resource/postag_train_auto.json')
+                pos_test = self.preprocessor.read_pos('resource/postag_test_auto.json')
+                x_pos = [pos_train, pos_test]
+
                 y_pred = self.model.predict([x[i], x_pos[i]])
             else:
                 y_pred = self.model.predict(x[i])
@@ -312,20 +289,21 @@ class AspectCategorizer():
             y_true = (y_true>0).astype(int)
 
             acc = accuracy_score(y_true.reshape([-1]), y_pred.reshape([-1]))
-            precision = precision_score(y_true, y_pred, average='micro')
-            recall = recall_score(y_true, y_pred, average='micro')
-            f1 = f1_score(y_true, y_pred, average='micro')
+            precision = precision_score(y_true, y_pred, average='macro')
+            recall = recall_score(y_true, y_pred, average='macro')
+            f1 = f1_score(y_true, y_pred, average='macro')
 
             self.result = {
                 'pred' : y_pred,
                 'true' : y_true
             }
 
-            print('{:10s} {:<10.4f} {:<10.4f} {:<10.4f} '.format(x_name[i], precision, recall, f1))
+            print('{:10s} {:<10.4f} {:<10.4f} {:<10.4f} {:<10.4f} '.format(x_name[i], acc, precision, recall, f1))
         
 
     def evaluate_each_aspect(self, x_test, y_test):
         if self.pos_tag is 'embedding':
+            pos_test = self.preprocessor.read_pos('resource/postag_test_auto.json')
             y_pred = self.model.predict([x_test, pos_test])
         else:
             y_pred = self.model.predict(x_test)
