@@ -32,7 +32,7 @@ class Preprocessor():
             remove_punct = True,
             masking = True,
             embedding = True,
-            pos_tag = 'one_hot',
+            pos_tag = 'embedding',
             dependency = True):
         self.module_name = module_name
         self.train_file = train_file
@@ -135,11 +135,7 @@ class Preprocessor():
                 new[i] = 4
             elif data[i] == 'fue;':
                 new[i] = 5
-        print('sebelum di encode: ', new.shape)
-        print(new)
         new = to_categorical(new, num_classes=6)
-        print('setelah di encode: ', new.shape)
-        print(new)
         return new
 
     def __read_sentiment(self, json_path, review):
@@ -315,14 +311,14 @@ class Preprocessor():
             concat.append(temp)
         return np.array(concat)
 
-    def get_all_input(self):
+    def get_all_input_aspect(self):
         if self.embedding:
             x_train, x_test = self.get_encoded_input()
         else:
             x_train, x_test = self.get_embedded_input()
             if self.pos_tag == 'one_hot':
-                pos_train = self.read_pos('resource/postag_train_input.json')
-                pos_test = self.read_pos('resource/postag_test_input.json')
+                pos_train = self.read_pos('resource/postag_train_auto.json')
+                pos_test = self.read_pos('resource/postag_test_auto.json')
 
                 encoded_train = self.get_encoded_pos(pos_train)
                 encoded_test = self.get_encoded_pos(pos_test)
@@ -342,26 +338,58 @@ class Preprocessor():
 
         if self.module_name == 'aspect':
             y_train = self.__read_aspect(self.train_file)
+        elif self.module_name == 'sentiment':
+            y_train = self.__read_aspect('aspect/data/aspect_train.json')
 
+        if self.module_name == 'sentiment':
+            y_test = self.__read_aspect('aspect/data/aspect_test.json')
+        else:
             if self.test_file is not None:
                 y_test = self.__read_aspect(self.test_file)
             else:
                 if self.train_file == 'aspect/data/aspect_train.json':
                     y_test = self.__read_aspect('aspect/data/aspect_test.json')
+                elif self.train_file == 'aspect/data/aspect_train_tokenized.json':
+                    y_test = self.__read_aspect('aspect/data/aspect_test_tokenized.json')
+                elif self.train_file == 'aspect/data/aspect_train_masked_tokenized.json':
+                    y_test = self.__read_aspect('aspect/data/aspect_test_masked_tokenized.json')
 
-            
-        elif self.module_name == 'sentiment':
-            y_train, aspect_train = self.__read_sentiment(self.train_file, x_train)
+        return x_train, y_train, x_test, y_test
 
-            if self.test_file is not None:
-                y_test, aspect_test = self.__read_sentiment(self.test_file, x_test)
-            else:
-                if self.train_file == 'sentiment/data/sentiment_train.json':
-                    y_test, aspect_test = self.__read_sentiment('sentiment/data/sentiment_test.json', x_test)
+    def get_all_input_sentiment(self):
+        if self.embedding:
+            x_train, x_test = self.get_encoded_input()
+        else:
+            x_train, x_test = self.get_embedded_input()
+            if self.pos_tag == 'one_hot':
+                pos_train = self.read_pos('resource/postag_train_auto.json')
+                pos_test = self.read_pos('resource/postag_test_auto.json')
 
-            x_train = self.concatenate(x_train, aspect_train)
-            x_test = self.concatenate(x_test, aspect_test)
-            print(x_train.shape)
-            print(x_test.shape)
+                encoded_train = self.get_encoded_pos(pos_train)
+                encoded_test = self.get_encoded_pos(pos_test)
+
+                x_train = self.concatenate(x_train, encoded_train)
+                x_test = self.concatenate(x_test, encoded_test)
+
+            if self.dependency == True:
+                json_train = self.__load_json('resource/dependency_train_auto.json')
+                json_test = self.__load_json('resource/dependency_train_auto.json')
+
+                encoded_train = self.get_encoded_term(json_train)
+                encoded_test = self.get_encoded_term(json_test)
+
+                x_train = self.concatenate(x_train, encoded_train)
+                x_test = self.concatenate(x_test, encoded_test)
+
+        y_train, aspect_train = self.__read_sentiment(self.train_file, x_train)
+
+        if self.test_file is not None:
+            y_test, aspect_test = self.__read_sentiment(self.test_file, x_test)
+        else:
+            if self.train_file == 'sentiment/data/sentiment_train.json':
+                y_test, aspect_test = self.__read_sentiment('sentiment/data/sentiment_test.json', x_test)
+
+        x_train = self.concatenate(x_train, aspect_train)
+        x_test = self.concatenate(x_test, aspect_test)
 
         return x_train, y_train, x_test, y_test
