@@ -6,7 +6,7 @@ import numpy as np
 import json
 import os
 
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import confusion_matrix, f1_score, recall_score, precision_score, accuracy_score
 
 from keras import backend as k
 from keras.preprocessing.sequence import pad_sequences
@@ -83,6 +83,20 @@ class SentimentClassifier():
         self.learning_rate = learning_rate
         self.weight_decay = weight_decay
 
+        self.batch_size = None
+        self.epochs = None
+        self.verbose = None
+        self.validation_split = None
+        self.cross_validation = None
+        self.n_fold = None
+        self.grid_search = None
+        self.callbacks = None
+
+        self.result = {
+            'pred' : None,
+            'true' : None
+        }
+
         print("Object has been created")
 
     def __get_config(self):
@@ -131,14 +145,12 @@ class SentimentClassifier():
             )(main_input)
 
             if self.pos_tag is 'embedding':
-                pos_matrix = self.preprocessor.get_pos_matrix(review)
+                _, pos_size = self.preprocessor.get_pos_dict()
                 pos_input = Input(shape=(MAX_LENGTH,), dtype='int32', name='pos_input')
-                x2 = Embedding(
-                    output_dim=30,
-                    input_dim=pos_size,
-                    input_length=MAX_LENGTH,
-                    weights=[pos_matrix],
-                    trainable=self.trainable_embedding,
+                x2 = Lambda(
+                    K.one_hot, 
+                    arguments={'num_classes': pos_size}, 
+                    output_shape=(MAX_LENGTH, pos_size)
                 )(pos_input)
                 x = keras.layers.concatenate([x, x2])
 
@@ -240,13 +252,43 @@ class SentimentClassifier():
         self.model = model
         self.history = history
 
+    def change_to_multilabel(self, aspects, sentiments):
+        multilabel = list()
+        idx = 0
+        for data in aspects:
+            temp = list()
+            for aspect in data:
+                if aspect == 1:
+                    if sentiments[idx] == 0:
+                        temp.append(2)
+                    else:
+                        temp.append(1)
+                    idx += 1
+                else:
+                    temp.append(0)
+            multilabel.append(temp)
+
+        return np.array(multilabel)
+
     def evaluate(self, x_train, y_train, x_test, y_test):
         x = [x_train, x_test, y_train, y_test]
         # x_pos = [pos_train, pos_test]
         x_name = ['Train-All', 'Test-All']
 
+        _, y_train_aspect, _, y_test_aspect = self.preprocessor.get_all_input_aspect()
+
+        x_aspect = [y_train_aspect, y_test_aspect]
+
         print("======================= EVALUATION =======================")
-        print('{:10s} {:10s} '.format('ASPECT', 'ACC'))
+        print('{:10s} {:10s} {:10s} {:10s} {:10s}'.format('ASPECT', 'ACC', 'PREC', 'RECALL', 'F1'))
+
+        self.evaluate_all(x_train, x_test, y_train, y_test, x_aspect)
+        self.evaluate_each_aspect(x_test, y_test, y_test_aspect)
+
+    def evaluate_all(self, x_train, x_test, y_train, y_test, x_aspect):
+        x = [x_train, x_test, y_train, y_test]
+        # x_pos = [pos_train, pos_test]
+        x_name = ['Train-All', 'Test-All']        
 
         for i in range(2):
             if self.pos_tag is 'embedding':
@@ -260,36 +302,64 @@ class SentimentClassifier():
 
             acc = accuracy_score(y_true, y_pred)
 
-            self.result = {
-                'pred' : y_pred,
-                'true' : y_true
-            }
+            if i == 1:
+                self.result = {
+                    'pred' : y_pred,
+                    'true' : y_true
+                }
 
-            print('{:10s} {:<10.4f} '.format(x_name[i], acc))
+            y_pred = self.change_to_multilabel(x_aspect[i], y_pred)
+            y_true = self.change_to_multilabel(x_aspect[i], y_true)
 
-    def evaluate_each_aspect(self, x_test, y_test):
-        if self.pos_tag is 'embedding':
-            y_pred = self.model.predict([x_test, pos_test])
-        else:
-            y_pred = self.model.predict(x_test)
-        y_true = y_test
+            pred_reshape = np.reshape(y_pred, -1)
+            true_reshape = np.reshape(y_true, -1)
 
-        # y_predlist = list()
-        # y_truelist = list()
-        # for i in range(len(self.aspects)):
-        #     tmp = list()
-        #     tmp = [item[i] for item in y_pred]
-        #     y_predlist.append(tmp)
-        #     tmp = list()
-        #     tmp = [item[i] for item in y_true]
-        #     y_truelist.append(tmp)
-                
-        # for i in range(len(self.aspects)):
-        #     y_predlist[i] = np.argmax(y_predlist[i], axis=1)
-        #     y_truelist[i] = np.argmax(y_truelist[i], axis=1)
+            precision = precision_score(true_reshape, pred_reshape, average='macro')
+            recall = recall_score(true_reshape, pred_reshape, average='macro')
+            f1 = f1_score(true_reshape, pred_reshape, average='macro')
 
-        #     acc = accuracy_score(y_truelist[i], y_predlist[i])
-        #     print('{:10s} {:<10.4f} '.format(self.aspects[i], acc))
+            print('{:10s} {:<10.4f} {:<10.4f} {:<10.4f} {:<10.4f} '.format(x_name[i], acc, precision, recall, f1))
+
+
+    def evaluate_each_aspect(self, x_test, y_test, y_test_aspect):
+        y_pred = self.change_to_multilabel(y_test_aspect, self.result['pred'])
+        y_true = self.change_to_multilabel(y_test_aspect, self.result['true'])
+
+        true_transpose = y_true.transpose()
+        pred_transpose = y_pred.transpose()
+
+        class_names = [0,1,2]
+        f1pos = list()
+        f1neg = list()
+        f1avg = list()
+
+        cnf_matrix = list()
+        for i in range(len(self.aspects)):
+            cnf_matrix.append(
+                confusion_matrix(
+                    true_transpose[i], 
+                    pred_transpose[i], 
+                    labels=class_names)
+                )
+            np.set_printoptions(precision=2)
+
+        for i in range(len(self.aspects)):
+            precpos = cnf_matrix[i][1][1]/(cnf_matrix[i][0][1]+cnf_matrix[i][1][1]+cnf_matrix[i][2][1])
+            recpos = cnf_matrix[i][1][1]/(cnf_matrix[i][1][0]+cnf_matrix[i][1][1]+cnf_matrix[i][1][2])
+            f1p = 2*(precpos*recpos)/(precpos+recpos)
+            f1pos.append(f1p)
+
+            precneg = cnf_matrix[i][2][2]/(cnf_matrix[i][0][2]+cnf_matrix[i][1][2]+cnf_matrix[i][2][2])
+            recneg = cnf_matrix[i][2][2]/(cnf_matrix[i][2][0]+cnf_matrix[i][2][1]+cnf_matrix[i][2][2])
+            f1n = 2*(precneg*recneg)/(precneg+recneg)
+            f1neg.append(f1n) 
+
+            precw = ((precpos*cnf_matrix[i][1][1]) + (precneg*cnf_matrix[i][2][2]))/(cnf_matrix[i][1][1] + cnf_matrix[i][2][2])
+            recw = ((recpos*cnf_matrix[i][1][1]) + (recneg*cnf_matrix[i][2][2]))/(cnf_matrix[i][1][1] + cnf_matrix[i][2][2])
+            f1w = 2*(precw*recw)/(precw+recw)
+            f1avg.append(f1w)
+            
+            print('{:10s} {:<10.4f} {:<10.4f} {:<10.4f} {:<10.4f} '.format(self.aspects[i], class_names[0], precw, recw, f1w))
 
         print('\n')
 
