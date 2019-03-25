@@ -92,9 +92,12 @@ class SentimentClassifier():
         self.grid_search = None
         self.callbacks = None
 
+        self.score = list()
         self.result = {
             'pred' : None,
-            'true' : None
+            'true' : None,
+            'join_pred' : None,
+            'join_true' : None,
         }
 
         print("Object has been created")
@@ -280,7 +283,9 @@ class SentimentClassifier():
         x_aspect = [y_train_aspect, y_test_aspect]
 
         print("======================= EVALUATION =======================")
-        print('{:10s} {:10s} {:10s} {:10s} {:10s}'.format('ASPECT', 'ACC', 'PREC', 'RECALL', 'F1'))
+        title = '{:10s} {:10s} {:10s} {:10s} {:10s}'.format('ASPECT', 'ACC', 'PREC', 'RECALL', 'F1')
+        self.score.append(title)
+        print(title)
 
         self.evaluate_all(x_train, x_test, y_train, y_test, x_aspect)
         self.evaluate_each_aspect(x_test, y_test, y_test_aspect)
@@ -300,25 +305,28 @@ class SentimentClassifier():
             y_pred = np.argmax(y_pred, axis=1)
             y_true = np.argmax(y_true, axis=1)
 
+            y_pred_multilabel = self.change_to_multilabel(x_aspect[i], y_pred)
+            y_true_multilabel = self.change_to_multilabel(x_aspect[i], y_true)
+
+            pred_reshape = np.reshape(y_pred_multilabel, -1)
+            true_reshape = np.reshape(y_true_multilabel, -1)
+
             acc = accuracy_score(y_true, y_pred)
-
-            if i == 1:
-                self.result = {
-                    'pred' : y_pred,
-                    'true' : y_true
-                }
-
-            y_pred = self.change_to_multilabel(x_aspect[i], y_pred)
-            y_true = self.change_to_multilabel(x_aspect[i], y_true)
-
-            pred_reshape = np.reshape(y_pred, -1)
-            true_reshape = np.reshape(y_true, -1)
-
             precision = precision_score(true_reshape, pred_reshape, average='macro')
             recall = recall_score(true_reshape, pred_reshape, average='macro')
             f1 = f1_score(true_reshape, pred_reshape, average='macro')
 
-            print('{:10s} {:<10.4f} {:<10.4f} {:<10.4f} {:<10.4f} '.format(x_name[i], acc, precision, recall, f1))
+            if i == 1:
+                self.result = {
+                    'pred' : y_pred,
+                    'true' : y_true,
+                    'join_pred' : y_pred_multilabel,
+                    'join_true' : y_true_multilabel
+                }
+
+            score = '{:10s} {:<10.4f} {:<10.4f} {:<10.4f} {:<10.4f} '.format(x_name[i], acc, precision, recall, f1)
+            print(score)
+            self.score.append(score)
 
 
     def evaluate_each_aspect(self, x_test, y_test, y_test_aspect):
@@ -359,7 +367,9 @@ class SentimentClassifier():
             f1w = 2*(precw*recw)/(precw+recw)
             f1avg.append(f1w)
             
-            print('{:10s} {:<10.4f} {:<10.4f} {:<10.4f} {:<10.4f} '.format(self.aspects[i], class_names[0], precw, recw, f1w))
+            score = '{:10s} {:<10.4f} {:<10.4f} {:<10.4f} {:<10.4f}'.format(self.aspects[i], class_names[0], precw, recw, f1w)
+            print(score)
+            self.score.append(score)
 
         print('\n')
 
@@ -385,25 +395,37 @@ class SentimentClassifier():
             os.mkdir(dir_path)
         self.model.save(os.path.join(dir_path, self.weight_file))
         y = self.__get_config()
-        print(y)
         with open(os.path.join(dir_path, self.config_file), 'w') as f:
             f.write(json.dumps(y, indent=4, sort_keys=True))
 
         review_test = self.preprocessor.read_data_for_sentiment('sentiment/data/sentiment_test.json')
 
-        # with open(os.path.join(dir_path, self.result_file), 'w') as f:
-        #     for i, pred in enumerate(self.result['pred']):
-        #         f.write(review_test[i])
-        #         temp = list()
-        #         true = list()
-        #         for j, asp in enumerate(pred):
-        #             if asp == 1:
-        #                 temp.append(self.aspects[j])
-        #             if self.result['true'] == 1:
-        #                 true.append(self.aspects[j])
-        #         f.write(json.dump(temp) + "\n")
-        #         f.write(json.dump(true) + "\n")
-
+        with open(os.path.join(dir_path, self.result_file), 'w') as f:
+            f.write("======================= EVALUATION =======================\n")
+            for score in self.score:
+                f.write(score + "\n")
+            f.write("\n")
+            f.write("======================= PREDICTION =======================\n")
+            idx = 0
+            for i, pred in enumerate(self.result['join_pred']):
+                f.write(str(i) + "\n")
+                for j, asp in enumerate(pred):
+                    if asp != 0:
+                        f.write(review_test[idx] + "\n")
+                        idx += 1
+                        if asp == 1:
+                            if self.result['join_true'][i][j] == 1:
+                                f.write("TRUE: "+ self.aspects[j] + " - positive\n")
+                            else:
+                                f.write("TRUE: "+ self.aspects[j] + " - negative\n")
+                            f.write("PRED: "+ self.aspects[j] + " - positive\n")
+                        elif asp == 2:
+                            if self.result['join_true'][i][j] == 1:
+                                f.write("TRUE: "+ self.aspects[j] + " - positive\n")
+                            else:
+                                f.write("TRUE: "+ self.aspects[j] + " - negative\n")
+                            f.write("PRED: "+ self.aspects[j] + " - negative\n")
+                    
     def load(self, dir_path):
         if not os.path.exists(dir_path):
             raise OSError('Directory \'{}\' not found.'.format(dir_path))
