@@ -6,6 +6,14 @@ import tensorflow as tf
 from keras import backend as k
 
 if __name__ == '__main__':
+    config = tf.ConfigProto()
+    # Don't pre-allocate memory; allocate as-needed
+    config.gpu_options.allow_growth = True
+    # Only allow a total of half the GPU memory to be allocated
+    config.gpu_options.per_process_gpu_memory_fraction = 0.3
+
+    k.tensorflow_backend.set_session(tf.Session(config=config))
+
     model = AspectCategorizer(
         train_file = 'aspect/data/aspect_train.json',
         normalize = False,
