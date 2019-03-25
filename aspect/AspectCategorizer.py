@@ -95,6 +95,7 @@ class AspectCategorizer():
         self.grid_search = None
         self.callbacks = None
 
+        self.score = list()
         self.result = {
             'pred' : None,
             'true' : None
@@ -266,8 +267,10 @@ class AspectCategorizer():
         x_name = ['Train-All', 'Test-All']
 
         print("======================= EVALUATION =======================")
-        print('{:10s} {:10s} {:10s} {:10s}'.format('ASPECT', 'PREC', 'RECALL', 'F1'))
-
+        title = '{:10s} {:10s} {:10s} {:10s} {:10s}'.format('ASPECT', 'ACC', 'PREC', 'RECALL', 'F1')
+        self.score.append(title)
+        print(title)
+        
         if self.validation_split > 0.0:
             print("Best epoch : ", np.argmax(self.history.history['val_f1'])+1)
 
@@ -298,7 +301,9 @@ class AspectCategorizer():
                 'true' : y_true
             }
 
-            print('{:10s} {:<10.4f} {:<10.4f} {:<10.4f} {:<10.4f} '.format(x_name[i], acc, precision, recall, f1))
+            score = '{:10s} {:<10.4f} {:<10.4f} {:<10.4f} {:<10.4f} '.format(x_name[i], acc, precision, recall, f1)
+            print(score)
+            self.score.append(score)
         
 
     def evaluate_each_aspect(self, x_test, y_test):
@@ -330,8 +335,9 @@ class AspectCategorizer():
             precision = precision_score(y_truelist[i], y_predlist[i])
             recall = recall_score(y_truelist[i], y_predlist[i])
             f1 = f1_score(y_truelist[i], y_predlist[i])
-            print('{:10s} {:<10.4f} {:<10.4f} {:<10.4f} '.format(self.aspects[i], precision, recall, f1))
-        print('\n')
+            score = '{:10s} {:<10.4f} {:<10.4f} {:<10.4f} {:<10.4f}'.format(self.aspects[i], acc, precision, recall, f1)
+            print(score)
+            self.score.append(score)
 
     def predict(self, new):
         encoded_new = self.tokenizer.texts_to_sequences([new.lower()])
@@ -361,6 +367,11 @@ class AspectCategorizer():
         review_test = self.preprocessor.read_data_for_aspect('aspect/data/aspect_test.json')
 
         with open(os.path.join(dir_path, self.result_file), 'w') as f:
+            f.write("======================= EVALUATION =======================\n")
+            for score in self.score:
+                f.write(score + "\n")
+            f.write("\n")
+            f.write("======================= PREDICTION =======================\n")
             for i, pred in enumerate(self.result['pred']):
                 f.write(str(i) + "\n")
                 f.write(review_test[i]+ "\n")

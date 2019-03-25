@@ -48,7 +48,7 @@ if __name__ == '__main__':
 
     named_tuple = time.localtime()
     time_string = time.strftime("%B-%d-%Y_%H-%M-%S", named_tuple)
-    # model.save('aspect/model/{}'.format(time_string))
+    model.save('aspect/model/{}'.format(time_string))
 
     # model.predict("Bensin nya irit banget nih tapi sayang kalo buat bepergian jauh mesinnya kurang kuat.")
     # model.predict("Pake mobil ini memang gak pernah kecewa, servis nya cepet sekali")
