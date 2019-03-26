@@ -30,7 +30,6 @@ class Preprocessor():
             normalize = True,
             lowercase = True,
             remove_punct = True,
-            masking = True,
             embedding = True,
             pos_tag = 'embedding',
             dependency = True):
@@ -40,7 +39,6 @@ class Preprocessor():
         self.normalize = normalize
         self.lowercase = lowercase
         self.remove_punct = remove_punct
-        self.masking = masking
         self.embedding = embedding
         self.pos_tag = pos_tag
         self.dependency = dependency
@@ -302,7 +300,7 @@ class Preprocessor():
         term = to_categorical(term, num_classes=2)
         return term
 
-    def concatenate(self, sentences_a, sentences_b):
+    def __concatenate(self, sentences_a, sentences_b):
         concat = list()
         for i, sentence in enumerate(sentences_a):
             temp = list()
@@ -323,8 +321,8 @@ class Preprocessor():
                 encoded_train = self.get_encoded_pos(pos_train)
                 encoded_test = self.get_encoded_pos(pos_test)
 
-                x_train = self.concatenate(x_train, encoded_train)
-                x_test = self.concatenate(x_test, encoded_test)
+                x_train = self.__concatenate(x_train, encoded_train)
+                x_test = self.__concatenate(x_test, encoded_test)
 
             if self.dependency == True:
                 json_train = self.__load_json('resource/dependency_train_auto.json')
@@ -333,8 +331,8 @@ class Preprocessor():
                 encoded_train = self.get_encoded_term(json_train)
                 encoded_test = self.get_encoded_term(json_test)
 
-                x_train = self.concatenate(x_train, encoded_train)
-                x_test = self.concatenate(x_test, encoded_test)
+                x_train = self.__concatenate(x_train, encoded_train)
+                x_test = self.__concatenate(x_test, encoded_test)
 
         if self.module_name == 'aspect':
             y_train = self.__read_aspect(self.train_file)
@@ -368,8 +366,8 @@ class Preprocessor():
                 encoded_train = self.get_encoded_pos(pos_train)
                 encoded_test = self.get_encoded_pos(pos_test)
 
-                x_train = self.concatenate(x_train, encoded_train)
-                x_test = self.concatenate(x_test, encoded_test)
+                x_train = self.__concatenate(x_train, encoded_train)
+                x_test = self.__concatenate(x_test, encoded_test)
 
             if self.dependency == True:
                 json_train = self.__load_json('resource/dependency_train_auto.json')
@@ -378,8 +376,8 @@ class Preprocessor():
                 encoded_train = self.get_encoded_term(json_train)
                 encoded_test = self.get_encoded_term(json_test)
 
-                x_train = self.concatenate(x_train, encoded_train)
-                x_test = self.concatenate(x_test, encoded_test)
+                x_train = self.__concatenate(x_train, encoded_train)
+                x_test = self.__concatenate(x_test, encoded_test)
 
         y_train, aspect_train = self.__read_sentiment(self.train_file, x_train)
 
@@ -389,7 +387,7 @@ class Preprocessor():
             if self.train_file == 'sentiment/data/sentiment_train.json':
                 y_test, aspect_test = self.__read_sentiment('sentiment/data/sentiment_test.json', x_test)
 
-        x_train = self.concatenate(x_train, aspect_train)
-        x_test = self.concatenate(x_test, aspect_test)
+        x_train = self.__concatenate(x_train, aspect_train)
+        x_test = self.__concatenate(x_test, aspect_test)
 
         return x_train, y_train, x_test, y_test

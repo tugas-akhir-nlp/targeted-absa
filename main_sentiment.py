@@ -19,7 +19,6 @@ if __name__ == '__main__':
         normalize = False,
         lowercase = True,
         remove_punct = True,
-        masking = False,
         embedding = False,
         trainable_embedding = True,
         pos_tag = False,

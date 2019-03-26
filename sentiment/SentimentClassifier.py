@@ -27,7 +27,6 @@ class SentimentClassifier():
             normalize = False,
             lowercase = True,
             remove_punct = True,
-            masking = False,
             embedding = True,
             trainable_embedding = True,
             pos_tag = None,
@@ -53,7 +52,6 @@ class SentimentClassifier():
             normalize = normalize,
             lowercase = lowercase,
             remove_punct = remove_punct,
-            masking = masking,
             embedding = embedding,
             pos_tag = pos_tag,
             dependency = dependency
