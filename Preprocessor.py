@@ -62,9 +62,6 @@ class Preprocessor():
             return ' '.join(result)
         return text
 
-    def __mask_entity(self, text):
-        return text
-
     def __load_embedding(self):
         print("Loading word embedding...")
         with open('resource/w2v_path.txt') as file:
@@ -182,6 +179,25 @@ class Preprocessor():
                     idx += 1
             pos.append(temp)
         return np.array(pos)
+
+    def get_position_embedding(self, reviews):
+        position = list()
+        for review in reviews:
+            temp = list()
+            dist = 0
+            for i, token in enumerate(review):
+                if '#entity1' in token:
+                    dist = dist - i
+                    for j in range(0, i):
+                        temp.append(dist)
+                        dist += 1
+                    dist = 0
+                    temp.append(dist)
+                    for j in range(i+1, len(review.split())):
+                        dist += 1
+                        temp.append(dist)
+                    position.append(temp)
+        return np.array(position)
 
     def get_tokenized(self):
         review = self.read_data_for_aspect(self.train_file)
