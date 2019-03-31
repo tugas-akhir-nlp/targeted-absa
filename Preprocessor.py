@@ -1,3 +1,4 @@
+import re
 import json
 import string
 import numpy as np
@@ -10,7 +11,7 @@ from keras.preprocessing.sequence import pad_sequences
 
 from DependencyTermExtractor import DependencyTermExtractor
 
-MAX_LENGTH = 100
+MAX_LENGTH = 50
 EMBEDDING_SIZE = 500
 ASPECT_LIST = [
     'others',
@@ -32,7 +33,8 @@ class Preprocessor():
             remove_punct = True,
             embedding = True,
             pos_tag = 'embedding',
-            dependency = True):
+            dependency = True,
+            use_entity = True):
         self.module_name = module_name
         self.train_file = train_file
         self.test_file = test_file
@@ -42,6 +44,7 @@ class Preprocessor():
         self.embedding = embedding
         self.pos_tag = pos_tag
         self.dependency = dependency
+        self.use_entity = use_entity
 
         self.punctuations = set(string.punctuation)
 
@@ -84,7 +87,6 @@ class Preprocessor():
         review = list()
         for data in json_data:
             temp = self.__lower(data['text'])
-            # temp = self.__lower(data)
             temp = self.__remove_punct(temp)
             review.append(temp)
         return review
@@ -168,19 +170,90 @@ class Preprocessor():
         pos_dict, _ = self.get_pos_dict()
         json_data = self.__load_json(json_path)
         
-        for data in json_data:
-            temp = np.zeros(MAX_LENGTH, dtype=int)
-            idx = 0
-            for sentence in data['sentences']:
-                for i, token in enumerate(sentence['tokens']):
-                    if i >= MAX_LENGTH:
-                        continue
-                    temp[idx] = pos_dict[token['pos_tag']]
-                    idx += 1
-            pos.append(temp)
+        if not self.remove_punct:
+            for data in json_data:
+                temp = np.zeros(MAX_LENGTH, dtype=int)
+                idx = 0
+                for sentence in data['sentences']:
+                    for i, token in enumerate(sentence['tokens']):
+                        if i >= MAX_LENGTH:
+                            break
+                        temp[idx] = pos_dict[token['pos_tag']]
+                        idx += 1
+                pos.append(temp)
+        else:
+            for data in json_data:
+                temp = np.zeros(MAX_LENGTH, dtype=int)
+                idx = 0
+                for sentence in data['sentences']:
+                    for i, token in enumerate(sentence['tokens']):
+                        if i >= MAX_LENGTH:
+                            break
+                        if pos_dict[token['pos_tag']] != 'PUN':
+                            temp[idx] = pos_dict[token['pos_tag']]
+                            idx += 1
+                pos.append(temp)
+
         return np.array(pos)
 
-    def get_position_embedding(self, reviews):
+    def get_positional_embedding_without_masking(self, json_path, entity_path):
+        list_position = list()
+        new_aspect = list()
+        new_label = list()
+        entity_json = self.__load_json(entity_path)
+        json_data = self.read_data_for_aspect(json_path)
+        aspect_label = self.__read_aspect(json_path)
+        
+        for i, sentence in enumerate(entity_json):
+            review = json_data[i]['text'].lower()
+            label = aspect_label[i]
+            if sentence['info'] != []:
+                for ent in sentence['info']:
+                    dist = 0
+                    position = list()
+                    entity = ent['name']
+                    entity = re.sub('ku', '', entity)
+                    entity = re.sub('-nya', '', entity)
+                    entity = re.sub('nya', '', entity)
+                    e_split = entity.split()
+                    e_first = e_split[0]
+                    split = review.split()
+                    for token in split:
+                        if e_first in token:
+                            loc = split.index(token)
+                            break
+                    dist = dist - loc
+                    for j in range(0,loc):
+                        position.append(dist)
+                        dist += 1
+                    for j in range(loc,loc+len(e_split)):
+                        position.append(dist)
+                    for j in range(loc+len(e_split), len(split)):
+                        dist += 1
+                        position.append(dist)
+                    for j in range(len(split), MAX_LENGTH):
+                        position.append(1000)
+                    position = position[:MAX_LENGTH]
+                    list_position.append(position)
+                    new_aspect.append(review)
+                    new_label.append(label)
+            else:
+                dist = 0
+                position = list()
+                split = review.split()
+                for j in range(0, len(split)):
+                    position.append(dist)
+                for j in range(len(split), MAX_LENGTH):
+                    position.append(1000)
+                position = position[:MAX_LENGTH]
+                list_position.append(position)
+                new_aspect.append(review)
+                new_label.append(label)
+            
+        return np.array(list_position), new_aspect, np.array(new_label)
+
+
+    def get_positional_embedding_with_masking(self, reviews):
         position = list()
         for review in reviews:
             temp = list()
@@ -212,13 +285,25 @@ class Preprocessor():
     def get_encoded_input(self):
         tokenizer = self.get_tokenized()
 
-        review = self.read_data_for_aspect(self.train_file)
+        if self.use_entity == True:
+            entity_file = self.__load_json('data/entity_train.json')
+            _, review, _ = self.get_positional_embedding_without_masking(self.train_file, entity_file)
+        else:
+            review = self.read_data_for_aspect(self.train_file)
 
         if self.test_file is not None:
-            review_test = self.read_data_for_aspect(self.test_file)
+            if self.use_entity == True:
+                entity_file = self.__load_json('data/entity_test.json')
+                _, review, _ = self.get_positional_embedding_without_masking(self.test_file, entity_file)
+            else:
+                review_test = self.read_data_for_aspect(self.test_file)
         else:
-            if self.train_file == 'aspect/data/aspect_train.json':
-                review_test = self.read_data_for_aspect('aspect/data/aspect_test.json')
+            if self.train_file == 'aspect/data/aspect_train_tokenized.json':
+                if self.use_entity == True:
+                    entity_file = self.__load_json('data/entity_test.json')
+                    _, review_test, _ = self.get_positional_embedding_without_masking('aspect/data/aspect_test_tokenized.json', entity_file)
+                else:                 
+                    review_test = self.read_data_for_aspect('aspect/data/aspect_test_tokenized.json')
 
         encoded_data = tokenizer.texts_to_sequences(review)
         encoded_data_test = tokenizer.texts_to_sequences(review_test)
@@ -351,7 +436,11 @@ class Preprocessor():
                 x_test = self.__concatenate(x_test, encoded_test)
 
         if self.module_name == 'aspect':
-            y_train = self.__read_aspect(self.train_file)
+            if self.use_entity == True:
+                entity_file = self.__load_json('data/entity_train.json')
+                _, _, y_train = self.get_positional_embedding_without_masking(self.train_file, entity_file)
+            else:                   
+                y_train = self.__read_aspect(self.train_file)
         elif self.module_name == 'sentiment':
             y_train = self.__read_aspect('aspect/data/aspect_train.json')
 
@@ -360,13 +449,11 @@ class Preprocessor():
         else:
             if self.test_file is not None:
                 y_test = self.__read_aspect(self.test_file)
-            else:
-                if self.train_file == 'aspect/data/aspect_train.json':
-                    y_test = self.__read_aspect('aspect/data/aspect_test.json')
-                elif self.train_file == 'aspect/data/aspect_train_tokenized.json':
-                    y_test = self.__read_aspect('aspect/data/aspect_test_tokenized.json')
-                elif self.train_file == 'aspect/data/aspect_train_masked_tokenized.json':
-                    y_test = self.__read_aspect('aspect/data/aspect_test_masked_tokenized.json')
+                if self.use_entity == True:
+                    entity_file = self.__load_json('data/entity_test.json')
+                    _, _, y_test = self.get_positional_embedding_without_masking(self.test_file, entity_file)
+                else:                   
+                    y_test = self.__read_aspect(self.test_file)
 
         return x_train, y_train, x_test, y_test
 
