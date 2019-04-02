@@ -193,6 +193,25 @@ class Preprocessor():
         
         return np.array(label), np.array(new_aspect)
 
+    def get_entities(self, json_path):
+        data = self.__load_json(json_path)
+        entities = list()
+
+        for datum in data:
+            for info in datum['info']:
+                if self.module_name == 'aspect':
+                    if info['name'] != None:
+                        entities.append(info['name'])
+                    else:
+                        entities.append('None')
+                elif self.module_name == 'sentiment':
+                    if info['name'] != None:
+                        for aspect in info['aspect']:
+                            entities.append(info['name'])
+                    else:
+                        entities.append('None')
+        return entities
+
     def get_pos_dict(self):
         pos_dict = self.__load_json('resource/pos_dict.json')
         pos_size = len(pos_dict) + 2
