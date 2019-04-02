@@ -1,25 +1,17 @@
 acungan jempol
+adaptasi
 adaptif
 adil
-afinitas
-afirmasi
-agilely
 agung
 ahli
-ahlinya
 ajaib
-aklamasi
 akomodatif
 akurat
-alam mimpi
 alhamdulillah
 allahu akbar
-altruistis
 aman
-amanah
 ambisius
 andal
-aneh
 anggun
 angin sepoi-sepoi
 angkat
@@ -34,17 +26,11 @@ bagos
 bagus
 bahagia
 baik
-baik diposisikan
-baik sekali
-baik-baik
 bakat
 bandel
 bangga
-bantuan
 banyak
-banyak akal
 barang baru
-batu permata
 bebas
 bebas masalah
 bebas pulsa
@@ -52,54 +38,31 @@ bebas rasa sakit
 bebas resiko
 bekerja
 bekerja keras
-belas kasihan
 benar
 benar-benar
-bengal
-beradaptasi
-beralasan
 berani
-berapi
-berarti
-berbaik hati
-berbakat
-berbesar hati
-berbudi luhur
-bercahaya
-bercanda
-bercita-cita
-berdaya cipta
-berdebar
-berdedikasi
-berdikari
-berempati
-bergairah
-bergaya
-bergema
-bergembira
-bergengsi
-bergizi
+baik hati
+besar hati
+budi luhur
+cahaya
+cita-cita
+daya cipta
+debar
+dedikasi
 berguna
-berharga
 berhasil
-berimbang
+imbang
 berisi
-beristirahat
-berjanji
 berjasa
-berjaya
-berjenis
-berjuang
-berkapasitas besar
+jaya
+jenis
+juang
+kapasitas besar
 berkat
-berkeinginan
-berkelakuan baik
 berkelanjutan
 berkembang
-berkeyakinan
 berkilau
 berkualitas
-berlangsung mudah
 berlimpah
 berlimpah-limpah
 bermaksud baik
@@ -108,7 +71,6 @@ bermanuver
 bermartabat
 bernilai
 berpendidikan
-berpendidikan baik
 berpengalaman
 berpengaruh
 berpengetahuan luas
@@ -146,6 +108,7 @@ bonus
 brilian
 cahaya
 cakap
+cakep
 cantik
 cashbacks
 cekatan
@@ -247,12 +210,10 @@ etis
 euforia
 evaluatif
 examplar
-fajar
 fantastis
 fasih
 favorit
 fenomenal
-firdaus
 fleksibel
 fleksibilitas
 futuristik
@@ -261,6 +222,7 @@ gainfully
 gairah
 gamblang
 garang
+gaya
 gembira
 gemuk
 gesit
@@ -602,7 +564,6 @@ menambah
 menang
 menantang
 menarik
-menariknya
 menawan
 mencengangkan
 mencintai
@@ -701,16 +662,9 @@ merayu
 mereda
 mereformasi
 merekomendasikan
-merelakan
 meremajakan
-merendahkan
-merenung
-merevitalisasi
-merevolusi
-merevolusionerkan
 meriangkan
 meringankan
-meromantiskan
 mewah
 meyakinkan
 minim resiko
@@ -733,7 +687,6 @@ murni
 mutakhir
 nasib
 nikmat
-non-kekerasan
 nyaman
 nyaring
 obat untuk segala penyakit
@@ -871,21 +824,15 @@ rasional
 rata
 realisasi
 realistis
-reformasi
 rekomendasi
 rela
 reputasi
 reseptif
-resiko rendah
 responsif
-restrukturisasi
-revolusioner
 ria gembira
 riang
 ringan
 ringkas
-rohani
-rokstar
 romantis
 rujuk
 sabar
@@ -893,17 +840,7 @@ sah
 saleh
 salut
 sangat
-sangat baik
-sangat berharga
-sangat indah
-sangat memuaskan
-sangat menarik
-sangat menyayangi
-sangat mudah
-sangat penting
-sangat rajin
-sangat sopan
-sangat tepat
+sangar
 sanjungan
 sarankan
 sayang
@@ -944,24 +881,18 @@ setajam silet
 setia
 setuju
 sewajarnya
-sewenang-wenang
 siap
 sigap
-sihir
 sikap tenang
-silakan
 silau
-simpatisan
 solidaritas
 sopan
 sorak kegirangan
 sosial
 spektakuler
 spontan
-sporty
 stabil
 stabilitas
-sub
 subhanallah
 subsidi
 subur
@@ -1002,8 +933,6 @@ tak terhitung
 tak terkalahkan
 tak terlupakan
 tak ternilai
-tak terpadai
-tak tertahankan
 takdir
 takjub
 takzim
@@ -1018,8 +947,6 @@ tanpa malu-malu
 tanpa rasa sakit
 tanpa rasa takut
 tanpa tenaga
-tawar
-tawaran
 tegas
 teguh
 teladan
@@ -1060,7 +987,6 @@ termotivasi
 termudah
 termurah
 terobosan
-terompet
 terpadu
 terpanas
 terpelajar
@@ -1076,15 +1002,11 @@ tertarik
 tertib
 tertinggi
 terus terang
-terutama
-tetap
-tiada bandingan
-tiada duanya
+tiada ada duanya
 tidak egois
+tidak jelek
 tidak ternilai
-tipis
-tokoh
-TOP
+top
 trendi
 tulang punggung
 tulus
@@ -1095,20 +1017,14 @@ unggul
 unggulan
 unik
 untung
-untungnya
 utuh
 uye
 variasi
 visioner
-wah
-wahyu
 warna-warni
 waspada
-whooa
-Whooooa
-Wows
-WOW
+wow
 yakin
 yay
 yeah
-yihaa
+yiha
