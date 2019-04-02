@@ -15,14 +15,15 @@ if __name__ == '__main__':
     k.tensorflow_backend.set_session(tf.Session(config=config))
 
     model = AspectCategorizer(
-        train_file = 'aspect/data/aspect_train.json',
-        normalize = False,
+        train_file = 'data/entity_train.json',
+        test_file= 'data/entity_test.json',
         lowercase = True,
-        remove_punct = False,
+        remove_punct = True,
         embedding = True,
         trainable_embedding = True,
-        pos_tag = 'embedding',
-        dependency = True,
+        pos_tag = None,
+        dependency = False,
+        use_entity = True,
         use_rnn = True,
         rnn_type = 'lstm',
         use_cnn = False,
@@ -41,8 +42,8 @@ if __name__ == '__main__':
     model.train(
         x_train, 
         y_train,
-        batch_size = 16,
-        epochs = 1,
+        batch_size = 32,
+        epochs = 7,
         verbose = 1,
         validation_split = 0.0,
         cross_validation = False,
