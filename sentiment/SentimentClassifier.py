@@ -8,7 +8,9 @@ import os
 
 from sklearn.metrics import confusion_matrix, f1_score, recall_score, precision_score, accuracy_score
 
-from keras import backend as k
+import keras
+from keras import backend as K
+from keras_pos_embd import PositionEmbedding
 from keras.preprocessing.sequence import pad_sequences
 from keras.models import Model, load_model
 from keras.layers import Dense, Dropout, Input, Embedding, TimeDistributed
@@ -24,13 +26,15 @@ class SentimentClassifier():
             module_name = 'sentiment',
             train_file = None,
             test_file = None,
-            normalize = False,
             lowercase = True,
             remove_punct = True,
             embedding = True,
             trainable_embedding = True,
             pos_tag = None,
             dependency = None,
+            use_entity = True,
+            use_lexicon = True,
+            use_op_target = True,
             use_rnn = True,
             rnn_type = 'lstm',
             return_sequence = True,
@@ -49,12 +53,14 @@ class SentimentClassifier():
             module_name = module_name,
             train_file = train_file,
             test_file = test_file,
-            normalize = normalize,
             lowercase = lowercase,
             remove_punct = remove_punct,
             embedding = embedding,
             pos_tag = pos_tag,
-            dependency = dependency
+            dependency = dependency,
+            use_entity = use_entity,
+            use_lexicon = use_lexicon,
+            use_op_target = use_op_target
         )        
         self.tokenizer = self.preprocessor.get_tokenized()
         self.aspects = ASPECT_LIST
@@ -67,6 +73,9 @@ class SentimentClassifier():
         self.trainable_embedding = trainable_embedding
         self.pos_tag = pos_tag
         self.dependency = dependency
+        self.use_entity = use_entity
+        self.use_lexicon = use_lexicon
+        self.use_op_target = use_op_target
         self.use_rnn = use_rnn
         self.rnn_type = rnn_type
         self.use_cnn = use_cnn
@@ -145,15 +154,45 @@ class SentimentClassifier():
                 trainable=self.trainable_embedding,
             )(main_input)
 
+            aspect_input = Input(shape=(MAX_LENGTH,), dtype='int32', name='aspect_input')
+            x2 = keras.layers.Lambda(
+                K.one_hot, 
+                arguments={'num_classes': len(ASPECT_LIST)}, 
+                output_shape=(MAX_LENGTH, len(ASPECT_LIST))
+            )(aspect_input)
+            x = keras.layers.concatenate([x, x2])
+
+            if self.use_entity == True:
+                weights = np.random.random((201, 50))
+                position_input = Input(shape=(MAX_LENGTH,), dtype='int32', name='position_input')
+                x2 = PositionEmbedding(
+                    input_shape=(MAX_LENGTH,),
+                    input_dim=100,    
+                    output_dim=50,     
+                    weights=[weights],
+                    mode=PositionEmbedding.MODE_EXPAND,
+                    name='position_embedding',
+                )(position_input)
+                x = keras.layers.concatenate([x, x2])
+
+            if self.use_lexicon == True:
+                lex_input = Input(shape=(MAX_LENGTH,), dtype='int32', name='lex_input')
+                x3 = keras.layers.Lambda(
+                    K.one_hot, 
+                    arguments={'num_classes': 3}, 
+                    output_shape=(MAX_LENGTH, 3)
+                )(lex_input)
+                x = keras.layers.concatenate([x, x3])
+
             if self.pos_tag is 'embedding':
                 _, pos_size = self.preprocessor.get_pos_dict()
                 pos_input = Input(shape=(MAX_LENGTH,), dtype='int32', name='pos_input')
-                x2 = Lambda(
+                x4 = keras.layers.Lambda(
                     K.one_hot, 
                     arguments={'num_classes': pos_size}, 
                     output_shape=(MAX_LENGTH, pos_size)
                 )(pos_input)
-                x = keras.layers.concatenate([x, x2])
+                x = keras.layers.concatenate([x, x4])
 
         else:
             new_embedding_size = EMBEDDING_SIZE + 6
@@ -196,10 +235,18 @@ class SentimentClassifier():
 
         print("4. Out")
 
+        x_input = list()
+        x_input.append(main_input)
+        x_input.append(aspect_input)
+
+        if self.use_entity == True:
+            x_input.append(position_input)
+        if self.use_lexicon == True:
+            x_input.append(lex_input)
         if self.pos_tag is 'embedding':
-            model = Model([main_input, pos_input], out)
-        else:
-            model = Model(main_input, out)
+            x_input.append(pos_input)
+        
+        model = Model(x_input, out)
 
         print("5. Model")
 
@@ -240,8 +287,24 @@ class SentimentClassifier():
 
         print("Training...")
 
+        x_input = list()
+        x_input.append(x_train)
+
+        _, aspect_train = self.preprocessor.read_sentiment(self.preprocessor.train_file, x_train)
+        x_input.append(aspect_train)
+
+        if self.use_entity == True:
+            position_train = self.preprocessor.get_positional_embedding_without_masking(self.preprocessor.train_file, 'data/entity_train.json')         
+            x_input.append(position_train)
+        if self.use_lexicon == True:
+            posneg_train = self.preprocessor.get_sentiment_lexicons('data/entity_train.json')
+            x_input.append(posneg_train)
+        if self.pos_tag == 'embedding':
+            pos_train = self.preprocessor.read_pos('resource/postag_train_auto.json')   
+            x_input.append(pos_train)
+
         history = model.fit(
-            x = x_train, 
+            x = x_input, 
             y = y_train, 
             batch_size = batch_size,
             epochs = epochs, 
@@ -273,11 +336,8 @@ class SentimentClassifier():
 
     def evaluate(self, x_train, y_train, x_test, y_test):
         x = [x_train, x_test, y_train, y_test]
-        # x_pos = [pos_train, pos_test]
         x_name = ['Train-All', 'Test-All']
-
         _, y_train_aspect, _, y_test_aspect = self.preprocessor.get_all_input_aspect()
-
         x_aspect = [y_train_aspect, y_test_aspect]
 
         print("======================= EVALUATION =======================")
@@ -289,15 +349,40 @@ class SentimentClassifier():
         self.evaluate_each_aspect(x_test, y_test, y_test_aspect)
 
     def evaluate_all(self, x_train, x_test, y_train, y_test, x_aspect):
-        x = [x_train, x_test, y_train, y_test]
-        # x_pos = [pos_train, pos_test]
-        x_name = ['Train-All', 'Test-All']        
+        x = [x_train, x_test, y_train, y_test]        
+        x_name = ['Train-All', 'Test-All'] 
+
+        _, aspect_train = self.preprocessor.read_sentiment(self.preprocessor.train_file, x_train)
+        _, aspect_test = self.preprocessor.read_sentiment(self.preprocessor.test_file, x_test)
+
+        x_asp = [aspect_train, aspect_test]
+
+        if self.use_entity == True:
+            position_train = self.preprocessor.get_positional_embedding_without_masking(self.preprocessor.train_file, 'data/entity_train.json')
+            position_test = self.preprocessor.get_positional_embedding_without_masking(self.preprocessor.test_file, 'data/entity_test.json')
+            x_position = [position_train, position_test] 
+
+        if self.use_lexicon == True:
+            posneg_train = self.preprocessor.get_sentiment_lexicons('data/entity_train.json')
+            posneg_test = self.preprocessor.get_sentiment_lexicons('data/entity_test.json')
+            x_lex = [posneg_train, posneg_test]
+
+        if self.pos_tag is 'embedding':
+            pos_train = self.preprocessor.read_pos('resource/postag_train_auto.json')
+            pos_test = self.preprocessor.read_pos('resource/postag_test_auto.json')
+            x_pos = [pos_train, pos_test]      
 
         for i in range(2):
-            if self.pos_tag is 'embedding':
-                y_pred = self.model.predict([x[i], x_pos[i]])
-            else:
-                y_pred = self.model.predict(x[i])
+            x_input = list()
+            x_input.append(x[i])
+            x_input.append(x_asp[i])
+
+            if self.use_entity:
+                x_input.append(x_position[i])
+            if self.use_lexicon:
+                x_input.append(x_lex[i])
+
+            y_pred = self.model.predict(x_input)
             y_true = x[i+2]
 
             y_pred = np.argmax(y_pred, axis=1)
@@ -396,7 +481,8 @@ class SentimentClassifier():
         with open(os.path.join(dir_path, self.config_file), 'w') as f:
             f.write(json.dumps(y, indent=4, sort_keys=True))
 
-        review_test = self.preprocessor.read_data_for_sentiment('sentiment/data/sentiment_test.json')
+        review_test = self.preprocessor.read_data_for_sentiment('data/entity_test.json')
+        entities = self.preprocessor.get_entities('data/entity_test.json')
 
         with open(os.path.join(dir_path, self.result_file), 'w') as f:
             f.write("======================= EVALUATION =======================\n")
@@ -413,16 +499,16 @@ class SentimentClassifier():
                         idx += 1
                         if asp == 1:
                             if self.result['join_true'][i][j] == 1:
-                                f.write("TRUE: "+ self.aspects[j] + " - positive\n")
+                                f.write("TRUE: "+ entities[i] + " - " + self.aspects[j] + " - positive\n")
                             else:
-                                f.write("TRUE: "+ self.aspects[j] + " - negative\n")
-                            f.write("PRED: "+ self.aspects[j] + " - positive\n")
+                                f.write("TRUE: "+ entities[i] + " - " + self.aspects[j] + " - negative\n")
+                            f.write("PRED: "+ entities[i] + " - " + self.aspects[j] + " - positive\n")
                         elif asp == 2:
                             if self.result['join_true'][i][j] == 1:
-                                f.write("TRUE: "+ self.aspects[j] + " - positive\n")
+                                f.write("TRUE: "+ entities[i] + " - " + self.aspects[j] + " - positive\n")
                             else:
-                                f.write("TRUE: "+ self.aspects[j] + " - negative\n")
-                            f.write("PRED: "+ self.aspects[j] + " - negative\n")
+                                f.write("TRUE: "+ entities[i] + " - " + self.aspects[j] + " - negative\n")
+                            f.write("PRED: "+ entities[i] + " - " + self.aspects[j] + " - negative\n")
                     
     def load(self, dir_path):
         if not os.path.exists(dir_path):

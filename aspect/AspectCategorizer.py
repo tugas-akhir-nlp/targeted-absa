@@ -11,6 +11,7 @@ from sklearn.metrics import f1_score, recall_score, precision_score, accuracy_sc
 
 import keras
 from keras import backend as K
+from keras_pos_embd import PositionEmbedding
 from keras.preprocessing.sequence import pad_sequences
 from keras.models import Model, load_model
 from keras.layers import Dense, Dropout, Input, Embedding, TimeDistributed, Lambda
@@ -27,13 +28,13 @@ class AspectCategorizer():
             module_name = 'aspect',
             train_file = None,
             test_file = None,
-            normalize = False,
             lowercase = True,
             remove_punct = True,
             embedding = True,
             trainable_embedding = True,
             pos_tag = None,
             dependency = None,
+            use_entity = True,
             use_rnn = True,
             rnn_type = 'lstm',
             return_sequence = True,
@@ -52,12 +53,12 @@ class AspectCategorizer():
             module_name = module_name,
             train_file = train_file,
             test_file = test_file,
-            normalize = normalize,
             lowercase = lowercase,
             remove_punct = remove_punct,
             embedding = embedding,
             pos_tag = pos_tag,
-            dependency = dependency
+            dependency = dependency,
+            use_entity = use_entity
         )        
         self.tokenizer = self.preprocessor.get_tokenized()
         self.aspects = ASPECT_LIST
@@ -70,6 +71,7 @@ class AspectCategorizer():
         self.trainable_embedding = trainable_embedding
         self.pos_tag = pos_tag
         self.dependency = dependency
+        self.use_entity = use_entity
         self.use_rnn = use_rnn
         self.rnn_type = rnn_type
         self.use_cnn = use_cnn
@@ -146,15 +148,28 @@ class AspectCategorizer():
                 trainable=self.trainable_embedding,
             )(main_input)
 
+            if self.use_entity == True:
+                weights = np.random.random((201, 50))
+                position_input = Input(shape=(MAX_LENGTH,), dtype='int32', name='position_input')
+                x2 = PositionEmbedding(
+                    input_shape=(MAX_LENGTH,),
+                    input_dim=100,    
+                    output_dim=50,     
+                    weights=[weights],
+                    mode=PositionEmbedding.MODE_EXPAND,
+                    name='position_embedding',
+                )(position_input)
+                x = keras.layers.concatenate([x, x2])
+
             if self.pos_tag is 'embedding':
                 _, pos_size = self.preprocessor.get_pos_dict()
                 pos_input = Input(shape=(MAX_LENGTH,), dtype='int32', name='pos_input')
-                x2 = Lambda(
+                x3 = Lambda(
                     K.one_hot, 
                     arguments={'num_classes': pos_size}, 
                     output_shape=(MAX_LENGTH, pos_size)
                 )(pos_input)
-                x = keras.layers.concatenate([x, x2])
+                x = keras.layers.concatenate([x, x3])
 
         else:
             new_embedding_size = EMBEDDING_SIZE
@@ -197,10 +212,15 @@ class AspectCategorizer():
 
         print("4. Out")
 
+        x_input = list()
+        x_input.append(main_input)
+
+        if self.use_entity == True:
+            x_input.append(position_input)
         if self.pos_tag is 'embedding':
-            model = Model([main_input, pos_input], out)
-        else:
-            model = Model(main_input, out)
+            x_input.append(pos_input)
+        
+        model = Model(x_input, out)
 
         print("5. Model")
 
@@ -241,11 +261,28 @@ class AspectCategorizer():
 
         print("Training...")
 
-        if self.pos_tag is 'embedding':
-            pos_train = self.preprocessor.read_pos('resource/postag_train_auto.json')
-            x_input = [x_train, pos_train]
-        else:
-            x_input = x_train
+        x_input = list()
+        x_input.append(x_train)
+
+        if self.use_entity == True:
+            position_train = self.preprocessor.get_positional_embedding_without_masking(self.preprocessor.train_file, 'data/entity_train.json')         
+            x_input.append(position_train)
+        if self.pos_tag == 'embedding':
+            pos_train = self.preprocessor.read_pos('resource/postag_train_auto.json')   
+            x_input.append(pos_train)
+
+        # if self.use_entity == True and self.pos_tag == 'embedding':            
+        #     pos_train = self.preprocessor.read_pos('resource/postag_train_auto.json')
+        #     position_train, _, _ = self.preprocessor.get_positional_embedding_without_masking(self.preprocessor.train_file, 'aspect/data/entity_train.json')
+        #     x_input = [x_train, position_train, pos_train]
+        # elif self.use_entity == True and self.pos_tag != 'embedding':
+        #     position_train, _, _ = self.preprocessor.get_positional_embedding_without_masking(self.preprocessor.train_file, 'aspect/data/entity_train.json')
+        #     x_input = [x_train, position_train]
+        # elif self.use_entity == False and self.pos_tag == 'embedding':
+        #     pos_train = self.preprocessor.read_pos('resource/postag_train_auto.json')
+        #     x_input = [x_train, pos_train]
+        # else:
+        #     x_input = x_train
 
         history = model.fit(
             x = x_input, 
@@ -264,6 +301,20 @@ class AspectCategorizer():
         x = [x_train, x_test, y_train, y_test]
         x_name = ['Train-All', 'Test-All']
 
+        if self.pos_tag is 'embedding':
+            pos_train = self.preprocessor.read_pos('resource/postag_train_auto.json')
+            pos_test = self.preprocessor.read_pos('resource/postag_test_auto.json')
+            x_pos = [pos_train, pos_test]
+
+            print(x_test[0])
+            print(pos_test[0])
+
+        if self.use_entity == True:
+            position_train = self.preprocessor.get_positional_embedding_without_masking(self.preprocessor.train_file, 'data/entity_train.json')
+            position_test = self.preprocessor.get_positional_embedding_without_masking(self.preprocessor.test_file, 'data/entity_test.json')
+            x_position = [position_train, position_test]
+
+
         print("======================= EVALUATION =======================")
         title = '{:10s} {:10s} {:10s} {:10s} {:10s}'.format('ASPECT', 'ACC', 'PREC', 'RECALL', 'F1')
         self.score.append(title)
@@ -273,14 +324,15 @@ class AspectCategorizer():
             print("Best epoch : ", np.argmax(self.history.history['val_f1'])+1)
 
         for i in range(2):
-            if self.pos_tag is 'embedding':
-                pos_train = self.preprocessor.read_pos('resource/postag_train_auto.json')
-                pos_test = self.preprocessor.read_pos('resource/postag_test_auto.json')
-                x_pos = [pos_train, pos_test]
-
+            if self.use_entity == True and self.pos_tag == 'embedding':            
+                y_pred = self.model.predict([x[i], x_position[i], x_pos[i]])
+            elif self.use_entity == True and self.pos_tag != 'embedding':
+                y_pred = self.model.predict([x[i], x_position[i]])
+            elif self.use_entity == False and self.pos_tag == 'embedding':
                 y_pred = self.model.predict([x[i], x_pos[i]])
             else:
                 y_pred = self.model.predict(x[i])
+
             y_true = x[i+2]
 
             y_pred = np.asarray(y_pred)
@@ -302,14 +354,19 @@ class AspectCategorizer():
             score = '{:10s} {:<10.4f} {:<10.4f} {:<10.4f} {:<10.4f} '.format(x_name[i], acc, precision, recall, f1)
             print(score)
             self.score.append(score)
-        
 
     def evaluate_each_aspect(self, x_test, y_test):
-        if self.pos_tag is 'embedding':
-            pos_test = self.preprocessor.read_pos('resource/postag_test_auto.json')
-            y_pred = self.model.predict([x_test, pos_test])
-        else:
-            y_pred = self.model.predict(x_test)
+        x_input = list()
+        x_input.append(x_test)
+
+        if self.use_entity == True:
+            position_test = self.preprocessor.get_positional_embedding_without_masking(self.preprocessor.test_file, 'data/entity_test.json')         
+            x_input.append(position_test)
+        if self.pos_tag == 'embedding':
+            pos_test = self.preprocessor.read_pos('resource/postag_test_auto.json')   
+            x_input.append(pos_test)
+        
+        y_pred = self.model.predict(x_input)
         y_true = y_test
 
         y_predlist = list()
@@ -362,7 +419,8 @@ class AspectCategorizer():
         with open(os.path.join(dir_path, self.config_file), 'w') as f:
             f.write(json.dumps(y, indent=4, sort_keys=True))
 
-        review_test = self.preprocessor.read_data_for_aspect('aspect/data/aspect_test.json')
+        review_test = self.preprocessor.read_data_for_aspect('data/entity_test.json')
+        entities = self.preprocessor.get_entities('data/entity_test.json')
 
         with open(os.path.join(dir_path, self.result_file), 'w') as f:
             f.write("======================= EVALUATION =======================\n")
@@ -380,8 +438,8 @@ class AspectCategorizer():
                         temp.append(self.aspects[j])
                     if self.result['true'][i][j] == 1:
                         true.append(self.aspects[j])
-                f.write("TRUE: " + json.dumps(true) + "\n")
-                f.write("PRED: " + json.dumps(temp) + "\n")
+                f.write("TRUE: " + entities[i] + " - " + json.dumps(true) + "\n")
+                f.write("PRED: " + entities[i] + " - " + json.dumps(temp) + "\n")
 
     def load(self, dir_path, custom={'f1':f1}):
         if not os.path.exists(dir_path):
