@@ -1,0 +1,975 @@
+=============================== WRONG PREDICTION ===============================
+3
+ya walaupun memiliki desain sporty kalau tingkat kenyamanan mobil berkurang juga berkurang kan
+TRUE: None - 0
+PRED: None - 1
+19
+sayang banget deh sama si kecil calya  
+TRUE: calya - 1
+PRED: calya - 0
+24
+saya pakai grand livina tetapi ngelitik terus mesin nya padahal sudah tune up lebih dari 3x  pakai shell terus enggak pernah premium  
+TRUE: grand livina - 0
+PRED: grand livina - 1
+26
+nissan grand livina tarikan lambat  isi 7 penumpang rada amblas  
+TRUE: nissan grand livina - 0
+PRED: nissan grand livina - 1
+44
+xpander mesin nya ngegeber terus bang  ngeri dah saya  
+TRUE: xpander - 0
+PRED: xpander - 1
+45
+daihatsu xenia mesin nya sering turun  kampung  
+TRUE: daihatsu xenia - 0
+PRED: daihatsu xenia - 1
+61
+masalah nopol mohon dipercepat motor scoopy saya mas  masalah nya dari tanggal 14 desember motor datang  sampai hari ini tanggal 11 januari pelat nya enggak datang-datang juga  kata nya paling lama 15 hari kerja  
+TRUE: scoopy - 0
+PRED: scoopy - 1
+77
+montir di bengkel resmi kayak nya lebih hebat dan berpengalaman  ya  
+TRUE: None - 1
+PRED: None - 0
+86
+bener banget tuh ridwan  gl saya juga masalah nya mirip banget terutama ac bikin masuk angin wkwkwkwkw
+TRUE: gl - 0
+PRED: gl - 1
+91
+gue juga pakai mobilio facelift tipe e klakson diganti keong karena suara asli nya cempreng enggak suka banget suara nya murahan  
+TRUE: mobilio facelift tipe e - 0
+PRED: mobilio facelift tipe e - 1
+93
+fortuner interior nya lebih mewah  tapi boros banget bensin nya  
+TRUE: fortuner - 1
+PRED: fortuner - 0
+125
+honda pcx lumayan boros juga ya bbm nya hem  
+TRUE: honda pcx - 0
+PRED: honda pcx - 1
+142
+semakin ke sini harga avanza kenapa menjadi semakin mahal  deh  
+TRUE: avanza - 0
+PRED: avanza - 1
+149
+dengan spesifikasi begitu  yamaha nmax mah mahal banget coi  
+TRUE: yamaha nmax - 1
+PRED: yamaha nmax - 0
+163
+toyota kan memang terkenal perusahaan otto yg paling banyak ambil untung makanya harga produk nya mahal mahal
+TRUE: Toyota - 0
+PRED: Toyota - 1
+170
+bahan bakar fortuner lebih irit daripada pajero
+TRUE: pajero - 0
+PRED: pajero - 1
+172
+yg lebih mantap nya lagi bodi bentuk fortuner lebih keren daripada pajero  
+TRUE: pajero - 0
+PRED: pajero - 1
+182
+saya rasa all new pajero lebih enak daripada all new toyota fortuner
+TRUE: all new Toyota Fortuner - 0
+PRED: all new Toyota Fortuner - 1
+191
+fortuner cacat di mesin dan transmisi
+TRUE: fortuner - 0
+PRED: fortuner - 1
+193
+lebih baik pajero daripada fortuner
+TRUE: Fortuner - 0
+PRED: Fortuner - 1
+200
+bahan bakar pajero sport lebih boros
+TRUE: Pajero sport - 0
+PRED: Pajero sport - 1
+204
+fortuner lemah tapi pajero kuat
+TRUE: pajero - 1
+PRED: pajero - 0
+206
+gua pilih eeeeeeee apa ya trd aja deh soal nya bagus
+TRUE: trd - 1
+PRED: trd - 0
+208
+pajero sport fitur lebih canggih dibanding fortuner
+TRUE: fortuner - 0
+PRED: fortuner - 1
+209
+akhirnya aku beli pajero ckd aja  mahal tapi fitur keselamatan lengkap
+TRUE: pajero ckd - 0
+PRED: pajero ckd - 1
+212
+lebih gahar pajero dibanding fortuner
+TRUE: fortuner - 0
+PRED: fortuner - 1
+235
+inden wuling cortez gak lama antrinya
+TRUE: wuling cortez - 1
+PRED: wuling cortez - 0
+239
+setahu saya suzuki splash tidak dilengkapi dengan airbag 
+TRUE: suzuki slash - 0
+PRED: suzuki slash - 1
+
+=============================== TRUE PREDICTION ===============================
+0
+terios paling gagah  apalagi warna merah metalic  
+TRUE: terios - 1
+PRED: terios - 1
+1
+terios paling gagah  apalagi warna merah metalic  
+TRUE: terios - 1
+PRED: terios - 1
+2
+gue pakai mobilio  menurut gue  bener fun to drive  enak dipakai nya  
+TRUE: mobilio - 1
+PRED: mobilio - 1
+4
+ya walaupun memiliki desain sporty kalau tingkat kenyamanan mobil berkurang juga berkurang kan
+TRUE: None - 1
+PRED: None - 1
+5
+xpander laku keras di pasar indonesia  
+TRUE: xpander - 1
+PRED: xpander - 1
+6
+kalau mau segala enak pakai avanza saja  mas  
+TRUE: avanza - 1
+PRED: avanza - 1
+7
+kalau untuk mahasiswa lebih baik pakai vario saja  
+TRUE: vario - 1
+PRED: vario - 1
+8
+nyaman banget pakai toyota rush  
+TRUE: toyota rush - 1
+PRED: toyota rush - 1
+9
+xpander enak banget sih dipakai nya  selalu di hati pokok nya  
+TRUE: xpander - 1
+PRED: xpander - 1
+10
+aku sih sudah nyaman dengan vario  
+TRUE: vario - 1
+PRED: vario - 1
+11
+scoopy sangat mendukung mobilisasi ku setiap hari nya  
+TRUE: scoopy - 1
+PRED: scoopy - 1
+12
+puas banget deh pakai spacy mah  meski sudah tidak produksi  
+TRUE: spacy - 1
+PRED: spacy - 1
+13
+mini cooper paling cakep di antara yang lainnya  
+TRUE: mini cooper - 1
+PRED: mini cooper - 1
+14
+secara keseluruhan kecewa dengan grandmax  
+TRUE: grandmax - 0
+PRED: grandmax - 0
+15
+sumpah suzuki carry alay banget sih  
+TRUE: suzuki carry - 0
+PRED: suzuki carry - 0
+16
+bangga nih kalau pakai xpander  
+TRUE: xpander - 1
+PRED: xpander - 1
+17
+honda brio jelek  aku menyesal membeli nya  
+TRUE: honda brio - 0
+PRED: honda brio - 0
+18
+senang nya pakai toyota rush  
+TRUE: toyota rush - 1
+PRED: toyota rush - 1
+20
+agak menyesal beli toyota c - hr  tidak sesuai bayangan ku  
+TRUE: toyota c-hr - 0
+PRED: toyota c-hr - 0
+21
+jadi bangga gini euy kalo pakai alphard mah haha
+TRUE: alphard - 1
+PRED: alphard - 1
+22
+saya pakai nissan livina x gear 2009 sampai pemakaian 98 000 jarang rewel mesin nya  kaki-kaki masih nyaman bantingan masih oke
+TRUE: nissan livina x gear 2009 - 1
+PRED: nissan livina x gear 2009 - 1
+23
+saya pakai nissan livina x gear 2009 sampai pemakaian 98 000 jarang rewel mesin nya  kaki-kaki masih nyaman bantingan masih oke
+TRUE: nissan livina x gear 2009 - 1
+PRED: nissan livina x gear 2009 - 1
+25
+saya pengguna livina zaman dulu tahun 2008 xv 1 8  alhamdulillah sampai sekarang enggak ada problem ngelitik mesin nya  lari enak  
+TRUE: livina - 1
+PRED: livina - 1
+27
+yamaha vega force  motor berpedal bandel nan irit  teman yang cocok mengisi aktivitas  kesibukan mu sobat
+TRUE: yamaha vega force - 1
+PRED: yamaha vega force - 1
+28
+yamaha vega force  motor berpedal bandel nan irit  teman yang cocok mengisi aktivitas  kesibukan mu sobat
+TRUE: yamaha vega force - 1
+PRED: yamaha vega force - 1
+29
+jadi pengin beli honda win100  si honda bandel  irit  bisa untuk segala medan  khusus nya medan kaligawe yang cukup ekstrem  cocok bangetlah buat pekerja keras  
+TRUE: honda win100 - 1
+PRED: honda win100 - 1
+30
+jadi pengin beli honda win100  si honda bandel  irit  bisa untuk segala medan  khusus nya medan kaligawe yang cukup ekstrem  cocok bangetlah buat pekerja keras  
+TRUE: honda win100 - 1
+PRED: honda win100 - 1
+31
+jadi pengin beli honda win100  si honda bandel  irit  bisa untuk segala medan  khusus nya medan kaligawe yang cukup ekstrem  cocok bangetlah buat pekerja keras  
+TRUE: honda win100 - 1
+PRED: honda win100 - 1
+32
+bingung dahulu mau beli motor apa yang irit  body enak dilihat  mesin bandel dan enggak gampang rusak untuk berangkat pulang kerja sama untuk kerja ojek daring  tetapi pas ada teman yang menyarankan beli honda scoopy semua kegelisahan teratasi saat ini :d
+TRUE: honda scoopy - 1
+PRED: honda scoopy - 1
+33
+bingung dahulu mau beli motor apa yang irit  body enak dilihat  mesin bandel dan enggak gampang rusak untuk berangkat pulang kerja sama untuk kerja ojek daring  tetapi pas ada teman yang menyarankan beli honda scoopy semua kegelisahan teratasi saat ini :d
+TRUE: honda scoopy - 1
+PRED: honda scoopy - 1
+34
+bingung dahulu mau beli motor apa yang irit  body enak dilihat  mesin bandel dan enggak gampang rusak untuk berangkat pulang kerja sama untuk kerja ojek daring  tetapi pas ada teman yang menyarankan beli honda scoopy semua kegelisahan teratasi saat ini :d
+TRUE: honda scoopy - 1
+PRED: honda scoopy - 1
+35
+mesin vario 125 memang paling gesit di antara yang lainnya  
+TRUE: vario 125 - 1
+PRED: vario 125 - 1
+36
+mesin halus spontan bbm irit gaya enggak ketinggalan  terima kasih kalau pengalaman saya enggak sama dengan pemakai vario 125 esp enggak sama mohon dimaafkan  
+TRUE: vario 125 esp - 1
+PRED: vario 125 esp - 1
+37
+mesin halus spontan bbm irit gaya enggak ketinggalan  terima kasih kalau pengalaman saya enggak sama dengan pemakai vario 125 esp enggak sama mohon dimaafkan  
+TRUE: vario 125 esp - 1
+PRED: vario 125 esp - 1
+38
+mesin halus spontan bbm irit gaya enggak ketinggalan  terima kasih kalau pengalaman saya enggak sama dengan pemakai vario 125 esp enggak sama mohon dimaafkan  
+TRUE: vario 125 esp - 1
+PRED: vario 125 esp - 1
+39
+vario sangat top untuk motor harian  irit di bahan bakar sangat nyaman saat dipakai jarak jauh maupun jarak dekat  
+TRUE: vario - 1
+PRED: vario - 1
+40
+vario sangat top untuk motor harian  irit di bahan bakar sangat nyaman saat dipakai jarak jauh maupun jarak dekat  
+TRUE: vario - 1
+PRED: vario - 1
+41
+honda vario 125 tenaga besar lebih cepat irit lagi motor selalu stabil ke jalanan yang kecil juga lebih mudah di jalan lebar lebih gesit
+TRUE: honda vario 125 - 1
+PRED: honda vario 125 - 1
+42
+honda vario 125 tenaga besar lebih cepat irit lagi motor selalu stabil ke jalanan yang kecil juga lebih mudah di jalan lebar lebih gesit
+TRUE: honda vario 125 - 1
+PRED: honda vario 125 - 1
+43
+gila sih mobilio mesin nya sering banget ngadat  
+TRUE: mobilio - 0
+PRED: mobilio - 0
+46
+temen saya kemarin mesin mobil nya meledak dong  dia pakai xenia  
+TRUE: xenia - 0
+PRED: xenia - 0
+47
+honda brio kecil  tapi kok enggak gesit ya mesin nya  
+TRUE: honda brio - 0
+PRED: honda brio - 0
+48
+sudah bertahun-tahun pakai xexi 2009  mesin nya masih halus banget  
+TRUE: xexi 2009 - 1
+PRED: xexi 2009 - 1
+49
+mobil xpander saya kok suara mesin nya berisik banget  ya  
+TRUE: xpander - 0
+PRED: xpander - 0
+50
+toyota calya mesin nya alus banget  gesit pula  
+TRUE: toyota calya - 1
+PRED: toyota calya - 1
+51
+daihatsu alya kurang tangguh nih mesin nya  
+TRUE: daihatsu alya - 0
+PRED: daihatsu alya - 0
+52
+saya punya gl xv at 2012  saya pribadi sangat mengapresiasi dengan after sales services - nya pihak nissan yang bagus  
+TRUE: gl xv at 2012 - 1
+PRED: gl xv at 2012 - 1
+53
+saya punya gl xv at 2012  saya pribadi sangat mengapresiasi dengan after sales services - nya pihak nissan yang bagus  
+TRUE: nissan - 1
+PRED: nissan - 1
+54
+fu150 tahun 2014 perawatan murah  lari termasuk lincah dan enak saat macet  lubang kecil apa pun masuk  
+TRUE: fu150 tahun 2014 - 1
+PRED: fu150 tahun 2014 - 1
+55
+fu150 tahun 2014 perawatan murah  lari termasuk lincah dan enak saat macet  lubang kecil apa pun masuk  
+TRUE: fu150 tahun 2014 - 1
+PRED: fu150 tahun 2014 - 1
+56
+fu150 tahun 2014 perawatan murah  lari termasuk lincah dan enak saat macet  lubang kecil apa pun masuk  
+TRUE: fu150 tahun 2014 - 1
+PRED: fu150 tahun 2014 - 1
+57
+honda spacy praktis cocok dalam perjalanan anda  ekstra boks yang mantap  mudah perawatan dan suku cadang yang memadai  mantap tarikan nya halus suara nya  
+TRUE: honda spacy - 1
+PRED: honda spacy - 1
+58
+honda spacy praktis cocok dalam perjalanan anda  ekstra boks yang mantap  mudah perawatan dan suku cadang yang memadai  mantap tarikan nya halus suara nya  
+TRUE: honda spacy - 1
+PRED: honda spacy - 1
+59
+honda spacy praktis cocok dalam perjalanan anda  ekstra boks yang mantap  mudah perawatan dan suku cadang yang memadai  mantap tarikan nya halus suara nya  
+TRUE: honda spacy - 1
+PRED: honda spacy - 1
+60
+honda spacy praktis cocok dalam perjalanan anda  ekstra boks yang mantap  mudah perawatan dan suku cadang yang memadai  mantap tarikan nya halus suara nya  
+TRUE: honda spacy - 1
+PRED: honda spacy - 1
+62
+honda vario tenaga oke  bengkel resmi banyak sekali sampe di daerah  sparepart banyak  purnajual bagus  
+TRUE: honda vario - 1
+PRED: honda vario - 1
+63
+honda vario tenaga oke  bengkel resmi banyak sekali sampe di daerah  sparepart banyak  purnajual bagus  
+TRUE: honda vario - 1
+PRED: honda vario - 1
+64
+honda vario tenaga oke  bengkel resmi banyak sekali sampe di daerah  sparepart banyak  purnajual bagus  
+TRUE: honda vario - 1
+PRED: honda vario - 1
+65
+honda vario tenaga oke  bengkel resmi banyak sekali sampe di daerah  sparepart banyak  purnajual bagus  
+TRUE: honda vario - 1
+PRED: honda vario - 1
+66
+stnk baru datang pas 7 hari  kalau dilihat dari tanggal cetak nya sih proses nya cuma 3 hari waduh  terus masalah gps gue dapat info 2 minggu setelah stnk jadi harus dikejar terus juragan toyota mah hadeh
+TRUE: toyota - 0
+PRED: toyota - 0
+67
+aslilah ini inden fortuner saja harus sampai sembilan bulan begini  lama benar  
+TRUE: fortuner - 0
+PRED: fortuner - 0
+68
+inden x - pander saja hanya tiga bulan  lah ini esemka tiga tahun  ini mobil apa tank  
+TRUE: x-pander - 1
+PRED: x-pander - 1
+69
+inden x - pander saja hanya tiga bulan  lah ini esemka tiga tahun  ini mobil apa tank  
+TRUE: esemka - 0
+PRED: esemka - 0
+70
+mekanik langganan sama bengkel resmi beda banget rasanya - _ - bengkel resmi honda malah bikin oli rembes sama tarikan berat dah  
+TRUE: honda - 0
+PRED: honda - 0
+71
+masih juga belum ada mekanik parahlah pelayanan nya bengkel resmi nya yamaha  
+TRUE: yamaha - 0
+PRED: yamaha - 0
+72
+ganti shock depan  oli nya segala macem kena 450 ribu di bengkel resmi toyota  lebih mahal daripada bengkel biasa  
+TRUE: toyota - 0
+PRED: toyota - 0
+73
+aksesoris di bengkel resmi ahass komplit banget  
+TRUE: ahass - 1
+PRED: ahass - 1
+74
+bengkel gak resmi kok kelihatan lebih ngerasa aman dari pada di bengkel resmi nya  
+TRUE: None - 0
+PRED: None - 0
+75
+kalau mau beli aksesoris xpander lebih baik di bengkel resmi mitsubishi  lebih murah dan kualitas nya bagus  
+TRUE: xpander - 1
+PRED: xpander - 1
+76
+kalau mau beli aksesoris xpander lebih baik di bengkel resmi mitsubishi  lebih murah dan kualitas nya bagus  
+TRUE: mitsubishi - 1
+PRED: mitsubishi - 1
+78
+saya selalu servis di bengkel resmi dan selalu puas dengan pelayanan nya  
+TRUE: None - 1
+PRED: None - 1
+79
+ganti oli di bengkel resmi lebih murah  guys  
+TRUE: None - 1
+PRED: None - 1
+80
+saya mendapatkan pelayanan yang buruk di bengkel resmi yamaha cihampelas  
+TRUE: yamaha - 0
+PRED: yamaha - 0
+81
+bengkel resmi nissan indonesia lama pelayanan nya  
+TRUE: nissan indonesia - 0
+PRED: nissan indonesia - 0
+82
+saya sih cat ulang di bengkel resmi nya toyota  lebih murah dan hasil nya memuaskan  
+TRUE: toyota - 1
+PRED: toyota - 1
+83
+desain eksterior nya sudah oke banget  
+TRUE: None - 1
+PRED: None - 1
+84
+saya punya nissan gl tahun 2013 nih tetapi masalah nya di kaki kurang enak suka jedag jeduk
+TRUE: nissan gl tahun 2013 - 0
+PRED: nissan gl tahun 2013 - 0
+85
+saya punya gl xv at 2012  roof monitor lumayan berguna buat family user  yang punya anak kecil yang duduk di belakang setidaknya ada hiburan selama perjalanan  
+TRUE: gl xv at 2012 - 1
+PRED: gl xv at 2012 - 1
+87
+grand livina tuh cuma 1 kesalahan fatal dan bikin enggak suka itu ya enggak ada double blower - nya mana ac tengah nya enggak begitu kerasa kalau siang bolong  
+TRUE: grand livina - 0
+PRED: grand livina - 0
+88
+ac - nya nissan gl enggak enak  kalau pas hujan pakai ac dingin banget  kalau enggak pakai kaca mengembun  
+TRUE: nissan gl - 0
+PRED: nissan gl - 0
+89
+saya punya 2008 livina x - gear matic enggak bosan-bosan pakai nya  suspensi nya tidak tertahankan kak  empuk banget serasa bawa mobil eropa  
+TRUE: 2008 livina x-gear matic - 1
+PRED: 2008 livina x-gear matic - 1
+90
+saya kira cuma saya saja yang mengira jok mobilio yang dahulu kayak pocong  
+TRUE: mobilio - 0
+PRED: mobilio - 0
+92
+mobilio soal kualitas material parah terutama dashboard - nya sama bangku  pintu  kelihatan banget " murahan "  
+TRUE: mobilio - 0
+PRED: mobilio - 0
+94
+fortuner interior nya lebih mewah  tapi boros banget bensin nya  
+TRUE: fortuner - 0
+PRED: fortuner - 0
+95
+kok fortuner enggak ada air bag - nya ya  
+TRUE: fortuner - 0
+PRED: fortuner - 0
+96
+pertama lihat xride 125 langsung jatuh hati sama penampilan nya  makanya pas mau beli enggak pakai pikir panjang lagi  langsung memutuskan ambil xride  lampu depan nya itu lo keren banget  dan tempat duduk nya nyaman banget  bodi nya yang agak tinggi bikin enggak pegal yang bonceng  setang nya bergaya banget  pokok nya jatuh cinta banget sama motor ini  
+TRUE: xride 125 - 1
+PRED: xride 125 - 1
+97
+satria fu sangat merajai di kelas nya  body yang ringan bisa membuat gesit untuk jalanan macet  desain yang elegan dan modern membuat jadi perhatian di jalanan
+TRUE: satria fu - 1
+PRED: satria fu - 1
+98
+satria fu sangat merajai di kelas nya  body yang ringan bisa membuat gesit untuk jalanan macet  desain yang elegan dan modern membuat jadi perhatian di jalanan
+TRUE: satria fu - 1
+PRED: satria fu - 1
+99
+yang paling menolong dari honda spacy bisa banget diajak belanja karena dengan bodi nya yang gendut otomatis bagasi nya lega terus leg room - nya juga bisa muat 2 galon air mineral  
+TRUE: honda spacy - 1
+PRED: honda spacy - 1
+100
+keluaran pcx 2018 terbaru sangat maknyus  harga langsung bisa bersaing di kelas nya  tarikan enggak kalah  desain apalagi  lampu lebih futuristik daripada yang lain  
+TRUE: pcx 2018 - 1
+PRED: pcx 2018 - 1
+101
+keluaran pcx 2018 terbaru sangat maknyus  harga langsung bisa bersaing di kelas nya  tarikan enggak kalah  desain apalagi  lampu lebih futuristik daripada yang lain  
+TRUE: pcx 2018 - 1
+PRED: pcx 2018 - 1
+102
+keluaran pcx 2018 terbaru sangat maknyus  harga langsung bisa bersaing di kelas nya  tarikan enggak kalah  desain apalagi  lampu lebih futuristik daripada yang lain  
+TRUE: pcx 2018 - 1
+PRED: pcx 2018 - 1
+103
+keluaran pcx 2018 terbaru sangat maknyus  harga langsung bisa bersaing di kelas nya  tarikan enggak kalah  desain apalagi  lampu lebih futuristik daripada yang lain  
+TRUE: pcx 2018 - 1
+PRED: pcx 2018 - 1
+104
+saya sangat tertarik dengan jenis motor ini  scoopy  terlihat cantik  elegan dan seksi  apalagi untuk wanita seperti saya  
+TRUE: scoopy - 1
+PRED: scoopy - 1
+105
+motor scoopy yang didesain lebih ekslkusif dan bentuk yang lebih ramping membuat lebih indah dan nyaman untuk berkendara  
+TRUE: scoopy - 1
+PRED: scoopy - 1
+106
+motor yamaha nmax memiliki desain yang lucu dan bisa memuat lumayan cukup barang  bisa diajak ke mana pun  
+TRUE: yamaha nmax - 1
+PRED: yamaha nmax - 1
+107
+menurut saya yamaha nmax adalah motor yang nyaman  bodi nya yang unik menurut saya makin membuat saya pede pada saat memakai nya  apalagi warna nya yang biasa namun terlihat elegan  spion yang membuat saya bisa melihat ke arah belakang lebih luas mempermudah saya dalam berkendara  
+TRUE: yamaha nmax - 1
+PRED: yamaha nmax - 1
+108
+menurut saya yamaha nmax adalah motor yang nyaman  bodi nya yang unik menurut saya makin membuat saya pede pada saat memakai nya  apalagi warna nya yang biasa namun terlihat elegan  spion yang membuat saya bisa melihat ke arah belakang lebih luas mempermudah saya dalam berkendara  
+TRUE: yamaha nmax - 1
+PRED: yamaha nmax - 1
+109
+mobilio bensin nya irit betul  
+TRUE: mobilio - 1
+PRED: mobilio - 1
+110
+buat kalian yang bingung mau cari motor  pilih saja yamaha  gue saja pakai yamaha dari gue masih kerja sampai punya anak  tetap saja yamaha pilihan gue  sudah begitu bensin nya irit banget  pokok nya yang terbaik buat yamaha
+TRUE: yamaha - 1
+PRED: yamaha - 1
+111
+buat kalian yang bingung mau cari motor  pilih saja yamaha  gue saja pakai yamaha dari gue masih kerja sampai punya anak  tetap saja yamaha pilihan gue  sudah begitu bensin nya irit banget  pokok nya yang terbaik buat yamaha
+TRUE: yamaha - 1
+PRED: yamaha - 1
+112
+saya baru beli suzuki satria 1 bulan yang lalu  awal nya ragu karena banyak yang bilang motor ini boros bahan bakar  ternyata memang benar  
+TRUE: suzuki satria - 0
+PRED: suzuki satria - 0
+113
+honda scoopy ternyata memang sesuai dengan ekspektasi saya  selain desain nya keren motor ini dilengkapi berbagai fitur dan juga bensin yang irit banget karena bisa dipakai sampai seminggu  
+TRUE: honda scoopy - 1
+PRED: honda scoopy - 1
+114
+honda scoopy ternyata memang sesuai dengan ekspektasi saya  selain desain nya keren motor ini dilengkapi berbagai fitur dan juga bensin yang irit banget karena bisa dipakai sampai seminggu  
+TRUE: honda scoopy - 1
+PRED: honda scoopy - 1
+115
+jangan ragu pilih motor honda karena memang irit bahan bakar dan ramah lingkungan saya sudah membuktikan sendiri dengan memakai honda scoopy  
+TRUE: honda scoopy - 1
+PRED: honda scoopy - 1
+116
+selain irit bahan bakar motor scoopy juga stabil dalam berkendaraan  
+TRUE: scoopy - 1
+PRED: scoopy - 1
+117
+selain irit bahan bakar motor scoopy juga stabil dalam berkendaraan  
+TRUE: scoopy - 1
+PRED: scoopy - 1
+118
+menurut saya vario 125 irit dan efisien  mesin nya andal dan kuat  
+TRUE: vario 125 - 1
+PRED: vario 125 - 1
+119
+menurut saya vario 125 irit dan efisien  mesin nya andal dan kuat  
+TRUE: vario 125 - 1
+PRED: vario 125 - 1
+120
+vario 125 bisa diadu irit nya dengan motor lain sekelas nya  
+TRUE: vario 125 - 1
+PRED: vario 125 - 1
+121
+memang cuma avanza yang bensin nya irit seirit-irit nya irit  
+TRUE: avanza - 1
+PRED: avanza - 1
+122
+xenia juga kalau bensin mah tidak kalah irit  bro  
+TRUE: xenia - 1
+PRED: xenia - 1
+123
+fortuner sih yang boros banget kalo soal bbm  
+TRUE: fortuner - 0
+PRED: fortuner - 0
+124
+daihatsu agya irit banget kalo urusan bensin mah yang lain lewat  
+TRUE: daihatsu agya - 1
+PRED: daihatsu agya - 1
+126
+kalau mau irit bensin sih lebih baik pakai honda scoopy  teman  
+TRUE: honda scoopy - 1
+PRED: honda scoopy - 1
+127
+nissan grand livina kok boros ya konsumsi bensin nya  
+TRUE: nissan grand livina - 0
+PRED: nissan grand livina - 0
+128
+gila lah ini xpander boros banget coi gue pake premium  
+TRUE: xpander - 0
+PRED: xpander - 0
+129
+kijang inova gue sudah lima tahun konsumsi bensin nya masih lumayan irit lah untuk hitungan mobil tua mah  
+TRUE: kijang inova - 1
+PRED: kijang inova - 1
+130
+bensin honda ar - v aku kok akhir-akhir ini boros banget ya bensin nya  
+TRUE: honda ar-v - 0
+PRED: honda ar-v - 0
+131
+toyota rush saya konsumsi bensin nya oke banget  nih  nyaman di kantong  
+TRUE: toyota rush - 1
+PRED: toyota rush - 1
+132
+jangan mau pakai vios  bensin nya parah banget boros nya  tekor saya  
+TRUE: vios - 0
+PRED: vios - 0
+133
+jujur motor yahama r15 v3 sahabat gue banget  harga nya ekonomis dan mesin nya tangguh  
+TRUE: yahama r15 v3 - 1
+PRED: yahama r15 v3 - 1
+134
+jujur motor yahama r15 v3 sahabat gue banget  harga nya ekonomis dan mesin nya tangguh  
+TRUE: yahama r15 v3 - 1
+PRED: yahama r15 v3 - 1
+135
+merek honda pcx memang kendaraan bermotor yang mempunyai nilai jual tinggi dan desain nya yang eksklusif
+TRUE: honda pcx - 1
+PRED: honda pcx - 1
+136
+merek honda pcx memang kendaraan bermotor yang mempunyai nilai jual tinggi dan desain nya yang eksklusif
+TRUE: honda pcx - 1
+PRED: honda pcx - 1
+137
+honda vario memiliki desain yang selalu mengikuti kebutuhan zaman yang modern  ekonomis pula  
+TRUE: honda vario - 1
+PRED: honda vario - 1
+138
+honda vario memiliki desain yang selalu mengikuti kebutuhan zaman yang modern  ekonomis pula  
+TRUE: honda vario - 1
+PRED: honda vario - 1
+139
+dengan harga yang murah  kita sudah mendapatkan kendaraan yang eksklusif untuk kelas matic lewat honda scoopy  
+TRUE: honda scoopy - 1
+PRED: honda scoopy - 1
+140
+sekadar info avanza 1300 matic sekarang lebih mahal 10 - 15 juta
+TRUE: avanza - 0
+PRED: avanza - 0
+141
+dengan harga nya terjangkau mobil avanza ini masih digemari masyarakat indonesia sebagai mobil keluarga pilihan
+TRUE: avanza - 1
+PRED: avanza - 1
+143
+harga purnajual xenia masih tinggi  coi  
+TRUE: xenia - 1
+PRED: xenia - 1
+144
+honda mobilio harga purnajual nya jatuh  gan  
+TRUE: honda mobilio - 0
+PRED: honda mobilio - 0
+145
+kalau mau murah beli saja brio  lumayan untuk keluarga kecil mah bisa  
+TRUE: brio - 1
+PRED: brio - 1
+146
+yamaha mio ekonomis nih untuk keluarga kelas menengah  
+TRUE: yamaha mio - 1
+PRED: yamaha mio - 1
+147
+yang paling cocok untuk mahasiswa memang vario lah dari segi harga mah  
+TRUE: vario - 1
+PRED: vario - 1
+148
+cucok banget nih harga revo x fi sangat ramah konsumen  
+TRUE: revo x fi - 1
+PRED: revo x fi - 1
+150
+jangan mau beli aerox 155  jelek dan mahal pula  
+TRUE: aerox 155 - 0
+PRED: aerox 155 - 0
+151
+jangan mau beli aerox 155  jelek dan mahal pula  
+TRUE: aerox 155 - 0
+PRED: aerox 155 - 0
+152
+honda scoopy esp ternyata mahal di pasaran jadi malas beli  
+TRUE: honda scoopy esp - 0
+PRED: honda scoopy esp - 0
+153
+kalau mau mobil yang bagus dan murah bisa pilih daihatsu terios  
+TRUE: daihatsu terios - 1
+PRED: daihatsu terios - 1
+154
+kalau mau mobil yang bagus dan murah bisa pilih daihatsu terios  
+TRUE: daihatsu terios - 1
+PRED: daihatsu terios - 1
+155
+grandmax kok harga nya naik  sih  
+TRUE: grandmax - 0
+PRED: grandmax - 0
+156
+kakak gue beli suzuki carry gak sebanding sama harga nya yang mahal  
+TRUE: suzuki carry - 0
+PRED: suzuki carry - 0
+157
+toyota calya mobil bagus  harga oke  
+TRUE: toyota calya - 1
+PRED: toyota calya - 1
+158
+toyota calya mobil bagus  harga oke  
+TRUE: toyota calya - 1
+PRED: toyota calya - 1
+159
+udah gak kaget sih sama honda  pelit banget soal fitur
+TRUE: Honda - 0
+PRED: Honda - 0
+160
+toyota avanza sparepart banyak mesin bandel perawatan mudah itulah pengalaman saya punya avanza
+TRUE: Toyota avanza - 1
+PRED: Toyota avanza - 1
+161
+toyota avanza sparepart banyak mesin bandel perawatan mudah itulah pengalaman saya punya avanza
+TRUE: Toyota avanza - 1
+PRED: Toyota avanza - 1
+162
+toyota avanza sparepart banyak mesin bandel perawatan mudah itulah pengalaman saya punya avanza
+TRUE: Toyota avanza - 1
+PRED: Toyota avanza - 1
+164
+avanza makin lama makin keren desain nya
+TRUE: Avanza - 1
+PRED: Avanza - 1
+165
+aku juga pilih brio  asyik dibawa jalan2
+TRUE: brio - 1
+PRED: brio - 1
+166
+bagasi nya sip dah  ntar kalo mudik ke kampung bisa bawa pulang beras satu sak
+TRUE: None - 1
+PRED: None - 1
+167
+saya lebih suka fortuner daripada pajero
+TRUE: fortuner - 1
+PRED: fortuner - 1
+168
+saya lebih suka fortuner daripada pajero
+TRUE: pajero - 0
+PRED: pajero - 0
+169
+bahan bakar fortuner lebih irit daripada pajero
+TRUE: fortuner - 1
+PRED: fortuner - 1
+171
+yg lebih mantap nya lagi bodi bentuk fortuner lebih keren daripada pajero  
+TRUE: fortuner - 1
+PRED: fortuner - 1
+173
+tbh pajero lebih nyaman suspensi nya  dan lebih halus mesin nya
+TRUE: pajero - 1
+PRED: pajero - 1
+174
+tbh pajero lebih nyaman suspensi nya  dan lebih halus mesin nya
+TRUE: pajero - 1
+PRED: pajero - 1
+175
+dari segi design interior  exterior fortuner lebih baik daripada pajero
+TRUE: Fortuner - 1
+PRED: Fortuner - 1
+176
+dari segi design interior  exterior fortuner lebih baik daripada pajero
+TRUE: Pajero - 0
+PRED: Pajero - 0
+177
+gua gak salah pilih pajero dakar  mesin nya lembut tenaga nya mantap
+TRUE: pajero dakar - 1
+PRED: pajero dakar - 1
+178
+pajero lebih bertenaga  mesin nya tangguh
+TRUE: Pajero - 1
+PRED: Pajero - 1
+179
+pajero lah lebih nyaman dan kuat mesin nya kalo buat offroad naik gunung
+TRUE: Pajero - 1
+PRED: Pajero - 1
+180
+pajero lah lebih nyaman dan kuat mesin nya kalo buat offroad naik gunung
+TRUE: Pajero - 1
+PRED: Pajero - 1
+181
+saya rasa all new pajero lebih enak daripada all new toyota fortuner
+TRUE: all new pajero - 1
+PRED: all new pajero - 1
+183
+ya pasti dari keseluruhan menang pajero lah
+TRUE: pajero - 1
+PRED: pajero - 1
+184
+sebagai pengguna pajero sport dakar  dari sisi mesin memang luar biasa  setiap tarikan nya dibarengi dengan suara turbo nya yg merdu
+TRUE: pajero sport dakar - 1
+PRED: pajero sport dakar - 1
+185
+pajero mewah design nya gw suka dari awal beli
+TRUE: Pajero - 1
+PRED: Pajero - 1
+186
+klo gua sih pajero sport dakar  karena desain body nya lebih kalem dan tenaga nya mantab punya  
+TRUE: Pajero sport Dakar - 1
+PRED: Pajero sport Dakar - 1
+187
+klo gua sih pajero sport dakar  karena desain body nya lebih kalem dan tenaga nya mantab punya  
+TRUE: Pajero sport Dakar - 1
+PRED: Pajero sport Dakar - 1
+188
+saya mah tetap pilih fortuner karena bagus dan mewah
+TRUE: fortuner - 1
+PRED: fortuner - 1
+189
+soal fiture dan kenyamanan dan safety menurut ane menang pajero jauh deh  
+TRUE: pajero - 1
+PRED: pajero - 1
+190
+soal fiture dan kenyamanan dan safety menurut ane menang pajero jauh deh  
+TRUE: pajero - 1
+PRED: pajero - 1
+192
+lebih baik pajero daripada fortuner
+TRUE: Pajero - 1
+PRED: Pajero - 1
+194
+design belakang pajero emang kurang bagus
+TRUE: pajero - 0
+PRED: pajero - 0
+195
+saya pengguna pajero sport dakar 4x2 yg jelas luar biasa
+TRUE: pajero sport dakar 4x2 - 1
+PRED: pajero sport dakar 4x2 - 1
+196
+aku pilih pajero lah
+TRUE: pajero - 1
+PRED: pajero - 1
+197
+dari segi body dan tenaga pajero lebih unggul
+TRUE: pajero - 1
+PRED: pajero - 1
+198
+dari segi body dan tenaga pajero lebih unggul
+TRUE: pajero - 1
+PRED: pajero - 1
+199
+kalo aku sendiri si lebih suka fortuner
+TRUE: fortuner - 1
+PRED: fortuner - 1
+201
+menurut saya desain belakang masih bagus pajero
+TRUE: pajero - 1
+PRED: pajero - 1
+202
+pokok nya tetep fortuner yang menang
+TRUE: fortuner - 1
+PRED: fortuner - 1
+203
+fortuner lemah tapi pajero kuat
+TRUE: fortuner - 0
+PRED: fortuner - 0
+205
+kalo fortuner menang di interior mantul dah
+TRUE: fortuner - 1
+PRED: fortuner - 1
+207
+pajero sport fitur lebih canggih dibanding fortuner
+TRUE: pajero sport - 1
+PRED: pajero sport - 1
+210
+akhirnya aku beli pajero ckd aja  mahal tapi fitur keselamatan lengkap
+TRUE: pajero ckd - 1
+PRED: pajero ckd - 1
+211
+lebih gahar pajero dibanding fortuner
+TRUE: pajero - 1
+PRED: pajero - 1
+213
+tenaga pajero lebih besar 181 ps daripada fortuner
+TRUE: pajero - 1
+PRED: pajero - 1
+214
+tenaga pajero lebih besar 181 ps daripada fortuner
+TRUE: fortuner - 0
+PRED: fortuner - 0
+215
+soal mesin xpander lebih halus getaran nya suara lebih alus juga
+TRUE: xpander - 1
+PRED: xpander - 1
+216
+mpv lebih ke kenyamanan sih  mau pilih mana ya terserah pembeli  
+TRUE: MPV - 1
+PRED: MPV - 1
+217
+rush tampilan kurang menarik
+TRUE: Rush - 0
+PRED: Rush - 0
+218
+aku pilih rush karena dalam nya keren
+TRUE: rush - 1
+PRED: rush - 1
+219
+sudah seminggu punya lexi dibandingkan yang sebelumn ya saya jauh lebih nyaman 
+TRUE: lexi - 1
+PRED: lexi - 1
+220
+honda cbr motor nyaman dan mudah dikendalikan
+TRUE: honda cbr - 1
+PRED: honda cbr - 1
+221
+freed mobil favorit keluarga saya 
+TRUE: freed - 1
+PRED: freed - 1
+222
+keren nya tiada tandingan memang wuling cortez  
+TRUE: wuling cortez - 1
+PRED: wuling cortez - 1
+223
+secara keseluruhan sih jelas wuling lebih bagus daripada mobilio
+TRUE: wuling - 1
+PRED: wuling - 1
+224
+secara keseluruhan sih jelas wuling lebih bagus daripada mobilio
+TRUE: mobilio - 0
+PRED: mobilio - 0
+225
+aerox sadis bro lari nya lincah sayang nya tidak masuk indonesia
+TRUE: aerox - 1
+PRED: aerox - 1
+226
+yamaha lexi handling mantap tenaga tidak diragukan karena sudah teknologi vva 
+TRUE: yamaha lexi - 1
+PRED: yamaha lexi - 1
+227
+yamaha lexi handling mantap tenaga tidak diragukan karena sudah teknologi vva 
+TRUE: yamaha lexi - 1
+PRED: yamaha lexi - 1
+228
+kalau diadu lari nya lebih lincah brio daripada mobilio
+TRUE: brio - 1
+PRED: brio - 1
+229
+kalau diadu lari nya lebih lincah brio daripada mobilio
+TRUE: mobilio - 0
+PRED: mobilio - 0
+230
+saya sudah pakai wuling confero hampir 1 tahun mesin enggak rewel bbm oke 
+TRUE: wuling confero - 1
+PRED: wuling confero - 1
+231
+saya sudah pakai wuling confero hampir 1 tahun mesin enggak rewel bbm oke 
+TRUE: wuling confero - 1
+PRED: wuling confero - 1
+232
+vario lemot enggak ada lari nya 
+TRUE: vario - 0
+PRED: vario - 0
+233
+mio tenaga nya lebih kuat daripada vario yang lemot
+TRUE: mio - 1
+PRED: mio - 1
+234
+mio tenaga nya lebih kuat daripada vario yang lemot
+TRUE: vario - 0
+PRED: vario - 0
+236
+gak lagi-lagi gua service di nissan sunter udh pelayanan nya jelek terus service nya amburadul
+TRUE: nissan - 0
+PRED: nissan - 0
+237
+kecewa sama bengkel suzuki bendan garapan enggak bagus suck 
+TRUE: suzuki - 0
+PRED: suzuki - 0
+238
+formo baris kedua kursinya jelek banget 
+TRUE: formo - 0
+PRED: formo - 0
+240
+kalo dari eksterior nya saya lebih suka brio daripada calya
+TRUE: brio - 1
+PRED: brio - 1
+241
+kalo dari eksterior nya saya lebih suka brio daripada calya
+TRUE: calya - 0
+PRED: calya - 0
+242
+jazz irit bbm jadi irit kantong juga 
+TRUE: jazz - 1
+PRED: jazz - 1
