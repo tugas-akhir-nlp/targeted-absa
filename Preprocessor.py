@@ -33,7 +33,9 @@ class Preprocessor():
             embedding = True,
             pos_tag = 'embedding',
             dependency = True,
-            use_entity = True, 
+            use_entity = True,
+            position_embd = False,
+            mask_entity = False, 
             use_lexicon = None,
             use_op_target = None):
         self.module_name = module_name
@@ -45,6 +47,8 @@ class Preprocessor():
         self.pos_tag = pos_tag
         self.dependency = dependency
         self.use_entity = use_entity
+        self.position_embd = position_embd
+        self.mask_entity = mask_entity
         self.use_lexicon = use_lexicon
         self.use_op_target = use_op_target
 
@@ -55,12 +59,11 @@ class Preprocessor():
 
     def __remove_punct(self, text):
         if self.remove_punct:
-            text_splitted = text.split()
-            result = list()
-            for text in text_splitted:
-                result.append(''.join(ch for ch in text if ch not in self.punctuations))
-            return ' '.join(result)
-        return text
+            if self.mask_entity:
+                clean = re.sub(r"[,.;@?!&$]+\ *", " ", text)
+            else:
+                clean = re.sub(r"[,.;@#?!&$]+\ *", " ", text)
+        return clean
 
     def __load_embedding(self):
         print("Loading word embedding...")
@@ -85,12 +88,18 @@ class Preprocessor():
         if self.use_entity:
             for data in json_data:
                 for _ in data['info']:
-                    temp = self.__lower(data['sentence'])
+                    if self.mask_entity:
+                        temp = self.__lower(data['masked_sentence'])
+                    else:
+                        temp = self.__lower(data['sentence'])
                     temp = self.__remove_punct(temp)
                     review.append(temp)
         else:
             for data in json_data:
-                temp = self.__lower(data['sentence'])
+                if self.mask_entity:
+                    temp = self.__lower(data['masked_sentence'])
+                else:
+                    temp = self.__lower(data['sentence'])
                 temp = self.__remove_punct(temp)
                 review.append(temp)
         return review
@@ -135,15 +144,18 @@ class Preprocessor():
             for datum in data:
                 for info in datum['info']:
                     for aspect in info['aspect']:
-                        temp = self.__lower(datum['sentence'])
+                        if self.mask_entity:
+                            temp = self.__lower(datum['masked_sentence'])
+                        else:
+                            temp = self.__lower(datum['sentence'])
                         temp = self.__remove_punct(temp)
                         review.append(temp)
-        else:
-            for datum in data:
-                for info in datum['info']:
-                    temp = self.__lower(datum['sentence'])
-                    temp = self.__remove_punct(temp)
-                    review.append(temp)
+        # else:
+        #     for datum in data:
+        #         for info in datum['info']:
+        #             temp = self.__lower(datum['sentence'])
+        #             temp = self.__remove_punct(temp)
+        #             review.append(temp)
         return review
     
     def __aspect2idx(self, data):
@@ -180,6 +192,10 @@ class Preprocessor():
                         elif aspect.split('|')[1] == 'positive':
                             label.append(1)
                         aspects.append(aspect.split('|')[0])
+            # for i in range(len(review)):
+            #     print(i)
+            #     print(review[i])
+            #     print(aspects[i], label[i])
             label = to_categorical(label, num_classes=2)
 
             aspects = self.__aspect2idx(aspects)
@@ -199,17 +215,18 @@ class Preprocessor():
 
         for datum in data:
             for info in datum['info']:
-                if self.module_name == 'aspect':
-                    if info['name'] != None:
-                        entities.append(info['name'])
-                    else:
-                        entities.append('None')
-                elif self.module_name == 'sentiment':
-                    if info['name'] != None:
-                        for aspect in info['aspect']:
-                            entities.append(info['name'])
-                    else:
-                        entities.append('None')
+                # if self.module_name == 'aspect':
+                if info['name'] != None:
+                    entities.append(info['name'])
+                else:
+                    entities.append('None')
+                # elif self.module_name == 'sentiment':
+                #     if info['name'] != None:
+                #         for aspect in info['aspect']:
+                #             entities.append(info['name'])
+                #     else:
+                #         for aspect in info['aspect']:
+                #             entities.append('None')
         return entities
 
     def get_pos_dict(self):
@@ -244,14 +261,19 @@ class Preprocessor():
                 if idx == MAX_LENGTH - 1:
                         break  
             if self.module_name == 'aspect':
-                for _ in data['info']:
+                if self.use_entity:
+                    for _ in data['info']:
+                        pos.append(temp)
+                else:
                     pos.append(temp)
             elif self.module_name == 'sentiment':
-                for info in data['info']:
-                    for _ in info['aspect']:
-                        pos.append(temp)
+                if self.use_entity:
+                    for info in data['info']:
+                        for _ in info['aspect']:
+                            pos.append(temp)
 
-        return np.array(pos)
+        pos = np.array(pos)
+        return pos
     
     def get_sentiment_lexicons(self, file):
         with open('resource/positif.txt', 'r', encoding='utf-8') as f:
@@ -272,6 +294,9 @@ class Preprocessor():
                         if split_neg[0] in token:
                             for j in range(i, i+len_neg):
                                 pos_neg[j] = 2
+                                if j == MAX_LENGTH - 1:
+                                    break
+                        if i == MAX_LENGTH - 1:
                             break
                         
             for pos in positive:
@@ -284,29 +309,28 @@ class Preprocessor():
                             for j in range(i, i+len_pos):
                                 if pos_neg[j] != 2:
                                     pos_neg[j] = 1
+                                if j == MAX_LENGTH - 1:
+                                    break
+                        if i == MAX_LENGTH - 1:
                             break
             pos_neg_all.append(pos_neg)
         return np.array(pos_neg_all)
 
-    def get_positional_embedding_without_masking(self, json_path, entity_path):
+    def get_positional_embedding_without_masking(self, entity_path):
         list_position = list()
         entity_json = self.__load_json(entity_path)
-        review = self.read_data_for_aspect(json_path)
-        
-        idx = 0
         for sentence in entity_json:            
             for ent in sentence['info']:
                 if ent['name'] != None:                
                     dist = 0
                     position = list()
-                    entity = ent['name']
+                    entity = ent['name'].lower()
                     entity = re.sub('ku', '', entity)
                     entity = re.sub('-nya', '', entity)
                     entity = re.sub('nya', '', entity)
                     e_split = entity.split()
                     e_first = e_split[0]
-                    split = review[idx].split()
-                    idx += 1
+                    split = (sentence['sentence'].lower()).split()
 
                     for token in split:
                         if e_first in token:
@@ -325,15 +349,20 @@ class Preprocessor():
                         position.append(1000)
                     position = position[:MAX_LENGTH]
                     if self.module_name == 'aspect':
+                        # print(split)
+                        # print(position)
+                        # print('=======================================================')
                         list_position.append(position)
                     elif self.module_name == 'sentiment':
                         for _ in ent['aspect']:
+                            # print(split)
+                            # print(position)
+                            # print('=======================================================')
                             list_position.append(position)
                 else:
                     dist = 0
                     position = list()
-                    split = review[idx].split()
-                    idx += 1
+                    split = (sentence['sentence'].lower()).split()
 
                     for j in range(0, len(split)):
                         position.append(dist)
@@ -341,40 +370,69 @@ class Preprocessor():
                         position.append(1000)
                     position = position[:MAX_LENGTH]
                     if self.module_name == 'aspect':
+                        # print(split)
+                        # print(position)
+                        # print('=======================================================')
                         list_position.append(position)
                     elif self.module_name == 'sentiment':
                         for _ in ent['aspect']:
+                            # print(split)
+                            # print(position)
+                            # print('=======================================================')
                             list_position.append(position)
             
         return np.array(list_position)
 
 
-    def get_positional_embedding_with_masking(self, reviews):
+    def get_positional_embedding_with_masking(self, entity_path):
         position = list()
-        for review in reviews:
-            temp = list()
-            dist = 0
-            for i, token in enumerate(review):
-                if '#entity1' in token:
-                    dist = dist - i
-                    for j in range(0, i):
-                        temp.append(dist)
-                        dist += 1
-                    dist = 0
-                    temp.append(dist)
-                    for j in range(i+1, len(review.split())):
-                        dist += 1
-                        temp.append(dist)
-                    position.append(temp)
+        entity_file = self.__load_json(entity_path)
+        for a, review in enumerate(entity_file):
+            split = (review['masked_sentence'].lower()).split()   
+            for name in review['info']:
+                if name['name'] != None:
+                    ent_name = name['entity_name']
+                    for i, token in enumerate(split):
+                        if ent_name in token:
+                            temp = list()
+                            dist = 0 - i
+                            for j in range(0, i):
+                                temp.append(dist)
+                                dist += 1
+                            dist = 0
+                            temp.append(dist)
+                            for j in range(i+1, len(split)):
+                                dist += 1
+                                temp.append(dist)
+                            for j in range(len(split), MAX_LENGTH):
+                                temp.append(1000)
+                            if self.module_name == 'aspect':
+                                position.append(temp[:MAX_LENGTH])
+                            elif self.module_name == 'sentiment':
+                                for _ in name['aspect']:
+                                    position.append(temp[:MAX_LENGTH])
+                            
+                else:
+                    temp = list()
+                    for j in range(0, len(split)):
+                        temp.append(0)
+                    for j in range(len(split), MAX_LENGTH):
+                        temp.append(1000)
+                    if self.module_name == 'aspect':
+                        position.append(temp[:MAX_LENGTH])
+                    elif self.module_name == 'sentiment':
+                        for _ in name['aspect']:
+                            position.append(temp[:MAX_LENGTH])
         return np.array(position)
+
 
     def get_tokenized(self):
         review = self.read_data_for_aspect(self.train_file)
 
         if self.remove_punct:
-            tokenizer = Tokenizer()
+            tokenizer = Tokenizer(oov_token=True)
         else:
-            tokenizer = Tokenizer(filters='\t\n')
+            tokenizer = Tokenizer(filters='', oov_token=True)
         tokenizer.fit_on_texts(review)
         return tokenizer
 
